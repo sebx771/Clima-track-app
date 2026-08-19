@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ClimaTrack</string>
+    <string name="logo_description">Logo de la aplicación</string>
+    <string name="first_title">Clima</string>
+    <string name="second_title">Track</string>
+    <string name="splash_screen_subtitle">Gestión de Mantenimiento\nde Equipos de Climatización</string>
+    <string name="loading_text">Cargando...</string>
 </resources>
