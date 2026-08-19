@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg">
+
+    <!-- Contenedor central para agrupar y centrar todo el contenido -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logo_climatrack"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/app_logo"
+            android:contentDescription="@string/logo_description" />
+
+        <!-- Fila para el título con dos colores distintos -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/first_title"
+                android:textColor="@color/color_primary"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/second_title"
+                android:textColor="@color/color_secondary"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Subtítulo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/splash_screen_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            android:gravity="center" />
+
+        <!-- Indicador de carga (Spinner circular) -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="64dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/color_primary" />
+
+        <!-- Texto de carga -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/loading_text"
+            android:textColor="@color/color_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
