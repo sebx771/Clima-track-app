@@ -35,6 +35,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val KEY_ORD_TIPO_SERVICIO = "tipo_servicio"
         const val KEY_ORD_DESCRIPCION = "descripcion"
         const val KEY_ORD_ESTADO = "estado"
+        const val KEY_ORD_LATITUD = "latitud"
+        const val KEY_ORD_LONGITUD = "longitud"
+        const val KEY_ORD_FOTO_RUTA = "foto_ruta"
+        const val KEY_ORD_FIRMA_RUTA = "firma_ruta"
         const val KEY_USR_EMAIL = "email"
     }
 
@@ -62,7 +66,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $KEY_ORD_EQUIPO TEXT,
                 $KEY_ORD_TIPO_SERVICIO TEXT,
                 $KEY_ORD_DESCRIPCION TEXT,
-                $KEY_ORD_ESTADO TEXT
+                $KEY_ORD_ESTADO TEXT,
+                $KEY_ORD_LATITUD TEXT,
+                $KEY_ORD_LONGITUD TEXT,
+                $KEY_ORD_FOTO_RUTA TEXT,
+                $KEY_ORD_FIRMA_RUTA TEXT
             )
         """.trimIndent()
 
