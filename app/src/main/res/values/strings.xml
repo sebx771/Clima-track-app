@@ -15,4 +15,14 @@
     <string name="hint_observaciones_mnt">Observaciones Adicionales</string>
     <string name="hint_estado_final">Estado Final del Equipo</string>
     <string name="btn_finalizar_mnt">FINALIZAR REGISTRO</string>
+    <string name="menu_inventario_repuestos">Inventario de Repuestos</string>
+    <string name="hint_nombre_repuesto">Nombre del Repuesto</string>
+    <string name="hint_codigo_repuesto">Código / Referencia</string>
+    <string name="hint_stock_repuesto">Cantidad en Stock</string>
+    <string name="btn_guardar_repuesto">GUARDAR REPUESTO</string>
+    <string name="stock_label">Stock: %d</string>
+    <string name="codigo_label">Código: %s</string>
+    <string name="msg_repuesto_guardado">Repuesto guardado</string>
+    <string name="msg_repuesto_error">Error al guardar</string>
+    <string name="msg_repuesto_eliminado">Repuesto eliminado</string>
 </resources>

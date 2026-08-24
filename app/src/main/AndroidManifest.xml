@@ -41,6 +41,16 @@
             android:exported="false"
             android:label="Registrar Mantenimiento" />
 
+        <activity
+            android:name=".activities.ListaRepuestosActivity"
+            android:exported="false"
+            android:label="Inventario de Repuestos" />
+
+        <activity
+            android:name=".activities.FormRepuestoActivity"
+            android:exported="false"
+            android:label="Registro de Repuesto" />
+
     </application>
 
 </manifest>

@@ -32,6 +32,78 @@ class RepuestoRepository(context: Context) {
     }
 
     /**
+     * Inserta un nuevo repuesto.
+     */
+    fun addRepuesto(repuesto: Repuesto): Long {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.KEY_REP_NOMBRE, repuesto.nombre)
+            put(DatabaseHelper.KEY_REP_CODIGO, repuesto.codigo)
+            put(DatabaseHelper.KEY_REP_STOCK, repuesto.cantidadDisponible)
+        }
+        val id = db.insert(DatabaseHelper.TABLE_REPUESTOS, null, values)
+        db.close()
+        return id
+    }
+
+    /**
+     * Busca un repuesto por ID.
+     */
+    fun getRepuestoById(id: Int): Repuesto? {
+        val db = dbHelper.readableDatabase
+        var repuesto: Repuesto? = null
+        val cursor = db.query(
+            DatabaseHelper.TABLE_REPUESTOS,
+            null,
+            "${DatabaseHelper.KEY_REP_ID}=?",
+            arrayOf(id.toString()),
+            null, null, null
+        )
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                repuesto = mapCursorToRepuesto(it)
+            }
+        }
+        db.close()
+        return repuesto
+    }
+
+    /**
+     * Actualiza la información de un repuesto.
+     */
+    fun updateRepuesto(repuesto: Repuesto): Int {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.KEY_REP_NOMBRE, repuesto.nombre)
+            put(DatabaseHelper.KEY_REP_CODIGO, repuesto.codigo)
+            put(DatabaseHelper.KEY_REP_STOCK, repuesto.cantidadDisponible)
+        }
+        val result = db.update(
+            DatabaseHelper.TABLE_REPUESTOS,
+            values,
+            "${DatabaseHelper.KEY_REP_ID}=?",
+            arrayOf(repuesto.id.toString())
+        )
+        db.close()
+        return result
+    }
+
+    /**
+     * Elimina un repuesto.
+     */
+    fun deleteRepuesto(id: Int): Int {
+        val db = dbHelper.writableDatabase
+        val result = db.delete(
+            DatabaseHelper.TABLE_REPUESTOS,
+            "${DatabaseHelper.KEY_REP_ID}=?",
+            arrayOf(id.toString())
+        )
+        db.close()
+        return result
+    }
+
+    /**
      * Actualiza el stock de un repuesto específico.
      */
     fun updateStock(repuestoId: Int, nuevaCantidad: Int): Int {

@@ -25,11 +25,27 @@ class ListaEquiposActivity : AppCompatActivity() {
         setContentView(R.layout.activity_lista_equipos)
 
         repo = EquipoRepository(this)
+        setupToolbar()
         setupRecyclerView()
 
         findViewById<FloatingActionButton>(R.id.fabAddEquipo).setOnClickListener {
             val intent = Intent(this, FormEquipoActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun setupToolbar() {
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbarEquipos)
+        toolbar.inflateMenu(R.menu.menu_lista_equipos)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_repuestos -> {
+                    val intent = Intent(this, ListaRepuestosActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
         }
     }
 
