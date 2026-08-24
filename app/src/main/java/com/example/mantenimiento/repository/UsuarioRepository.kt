@@ -1,4 +1,4 @@
-package com.example.climatrack.repositories
+package com.example.mantenimiento.repository
 
 import android.content.Context
 import com.example.mantenimiento.database.DatabaseHelper
