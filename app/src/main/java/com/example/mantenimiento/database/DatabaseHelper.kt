@@ -35,6 +35,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val KEY_ORD_TIPO_SERVICIO = "tipo_servicio"
         const val KEY_ORD_DESCRIPCION = "descripcion"
         const val KEY_ORD_ESTADO = "estado"
+        const val KEY_USR_EMAIL = "email"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -43,6 +44,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             CREATE TABLE $TABLE_USUARIOS (
                 $KEY_USR_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $KEY_USR_USUARIO TEXT,
+                $KEY_USR_EMAIL TEXT,
                 $KEY_USR_PASSWORD TEXT,
                 $KEY_USR_NOMBRE TEXT,
                 $KEY_USR_ROL TEXT
