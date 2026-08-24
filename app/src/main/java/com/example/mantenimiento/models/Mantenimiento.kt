@@ -11,4 +11,5 @@ data class Mantenimiento(
     val descripcion: String,
     val observaciones: String,
     val estadoFinal: String, // Operativo, Fuera de Servicio
+    var equipoNombre: String? = null,
 )

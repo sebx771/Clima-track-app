@@ -31,24 +31,27 @@ class MantenimientoRepository(context: Context) {
     }
 
     /**
-     * Obtiene el historial de mantenimientos para un equipo específico.
+     * Obtiene el historial completo de mantenimientos registrados con el nombre del equipo.
      */
-    fun getMantenimientosByEquipo(equipoId: Int): List<Mantenimiento> {
+    fun getAllMantenimientos(): List<Mantenimiento> {
         val mntList = mutableListOf<Mantenimiento>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
-            DatabaseHelper.TABLE_MANTENIMIENTOS,
-            null,
-            "${DatabaseHelper.KEY_MNT_EQP_ID}=?",
-            arrayOf(equipoId.toString()),
-            null, null,
-            "${DatabaseHelper.KEY_MNT_FECHA} DESC"
-        )
+        
+        val query = """
+            SELECT m.*, e.${DatabaseHelper.KEY_EQP_NOMBRE} 
+            FROM ${DatabaseHelper.TABLE_MANTENIMIENTOS} m
+            INNER JOIN ${DatabaseHelper.TABLE_EQUIPOS} e ON m.${DatabaseHelper.KEY_MNT_EQP_ID} = e.${DatabaseHelper.KEY_EQP_ID}
+            ORDER BY m.${DatabaseHelper.KEY_MNT_FECHA} DESC
+        """.trimIndent()
+
+        val cursor = db.rawQuery(query, null)
 
         cursor.use {
             if (it.moveToFirst()) {
                 do {
-                    mntList.add(mapCursorToMantenimiento(it))
+                    val mnt = mapCursorToMantenimiento(it)
+                    mnt.equipoNombre = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.KEY_EQP_NOMBRE))
+                    mntList.add(mnt)
                 } while (it.moveToNext())
             }
         }
@@ -57,21 +60,28 @@ class MantenimientoRepository(context: Context) {
     }
 
     /**
-     * Obtiene el historial completo de mantenimientos registrados.
+     * Obtiene el historial de mantenimientos para un equipo específico con su nombre.
      */
-    fun getAllMantenimientos(): List<Mantenimiento> {
+    fun getMantenimientosByEquipo(equipoId: Int): List<Mantenimiento> {
         val mntList = mutableListOf<Mantenimiento>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
-            DatabaseHelper.TABLE_MANTENIMIENTOS,
-            null, null, null, null, null,
-            "${DatabaseHelper.KEY_MNT_FECHA} DESC"
-        )
+        
+        val query = """
+            SELECT m.*, e.${DatabaseHelper.KEY_EQP_NOMBRE} 
+            FROM ${DatabaseHelper.TABLE_MANTENIMIENTOS} m
+            INNER JOIN ${DatabaseHelper.TABLE_EQUIPOS} e ON m.${DatabaseHelper.KEY_MNT_EQP_ID} = e.${DatabaseHelper.KEY_EQP_ID}
+            WHERE m.${DatabaseHelper.KEY_MNT_EQP_ID} = ?
+            ORDER BY m.${DatabaseHelper.KEY_MNT_FECHA} DESC
+        """.trimIndent()
+
+        val cursor = db.rawQuery(query, arrayOf(equipoId.toString()))
 
         cursor.use {
             if (it.moveToFirst()) {
                 do {
-                    mntList.add(mapCursorToMantenimiento(it))
+                    val mnt = mapCursorToMantenimiento(it)
+                    mnt.equipoNombre = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.KEY_EQP_NOMBRE))
+                    mntList.add(mnt)
                 } while (it.moveToNext())
             }
         }

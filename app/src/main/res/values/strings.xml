@@ -25,4 +25,7 @@
     <string name="msg_repuesto_guardado">Repuesto guardado</string>
     <string name="msg_repuesto_error">Error al guardar</string>
     <string name="msg_repuesto_eliminado">Repuesto eliminado</string>
+    <string name="fecha_tipo_format">%1$s - %2$s</string>
+    <string name="no_observaciones">Sin observaciones</string>
+    <string name="btn_cerrar">Cerrar</string>
 </resources>
