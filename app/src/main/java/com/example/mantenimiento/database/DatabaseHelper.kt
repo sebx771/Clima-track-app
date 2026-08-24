@@ -72,8 +72,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // 3. Insertar usuario  (tecnico01 / 123456)
         db.execSQL("""
-            INSERT INTO $TABLE_USUARIOS ($KEY_USR_USUARIO, $KEY_USR_PASSWORD, $KEY_USR_NOMBRE, $KEY_USR_ROL)
-            VALUES ('tecnico01', '123456', 'Técnico 01', 'Técnico')
+            INSERT INTO $TABLE_USUARIOS ($KEY_USR_USUARIO, $KEY_USR_PASSWORD, $KEY_USR_NOMBRE,$KEY_USR_EMAIL, $KEY_USR_ROL)
+            VALUES ('tecnico01', '123456', 'Técnico 01','tecnico@gmail.com' ,'Técnico')
         """.trimIndent())
 
         // 4. Insertar órdenes de prueba iniciales para el Dashboard y la lista
