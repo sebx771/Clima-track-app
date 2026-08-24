@@ -27,11 +27,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".activities.ListaEquiposActivity"
-            android:exported="false"
-            android:label="Equipos" />
-
-        <activity
             android:name=".activities.FormEquipoActivity"
             android:exported="false"
             android:label="Registro de Equipo" />
@@ -40,11 +35,6 @@
             android:name=".activities.RegistroMantenimientoActivity"
             android:exported="false"
             android:label="Registrar Mantenimiento" />
-
-        <activity
-            android:name=".activities.ListaRepuestosActivity"
-            android:exported="false"
-            android:label="Inventario de Repuestos" />
 
         <activity
             android:name=".activities.FormRepuestoActivity"

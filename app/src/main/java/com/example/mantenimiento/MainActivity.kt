@@ -15,8 +15,10 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         
-        // Cargar fragment inicial (Equipos)
-        loadFragment(EquiposFragment())
+        // Cargar fragment inicial (Equipos) solo la primera vez
+        if (savedInstanceState == null) {
+            loadFragment(EquiposFragment())
+        }
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
