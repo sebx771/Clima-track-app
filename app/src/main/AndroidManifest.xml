@@ -36,6 +36,11 @@
             android:exported="false"
             android:label="Registro de Equipo" />
 
+        <activity
+            android:name=".activities.RegistroMantenimientoActivity"
+            android:exported="false"
+            android:label="Registrar Mantenimiento" />
+
     </application>
 
 </manifest>

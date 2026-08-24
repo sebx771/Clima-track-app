@@ -5,4 +5,14 @@
     <string name="second_title">Track</string>
     <string name="splash_screen_subtitle">Gestión de Mantenimiento\nde Equipos de Climatización</string>
     <string name="loading_text">Cargando...</string>
+    <string name="equipo_label">Equipo: %s</string>
+    <string name="msg_mantenimiento_exito">Mantenimiento registrado con éxito</string>
+    <string name="msg_mantenimiento_error">Error al registrar</string>
+    <string name="msg_campos_obligatorios">Completa los campos obligatorios</string>
+    <string name="hint_fecha_mnt">Fecha del Servicio</string>
+    <string name="hint_tipo_mnt">Tipo de Mantenimiento</string>
+    <string name="hint_descripcion_mnt">Descripción Técnica</string>
+    <string name="hint_observaciones_mnt">Observaciones Adicionales</string>
+    <string name="hint_estado_final">Estado Final del Equipo</string>
+    <string name="btn_finalizar_mnt">FINALIZAR REGISTRO</string>
 </resources>

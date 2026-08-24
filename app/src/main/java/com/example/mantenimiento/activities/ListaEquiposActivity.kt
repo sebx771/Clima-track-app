@@ -50,11 +50,18 @@ class ListaEquiposActivity : AppCompatActivity() {
 
     private fun showOptionsMenu(equipo: Equipo, view: View) {
         val popup = PopupMenu(this, view)
+        popup.menu.add("Registrar Mantenimiento")
         popup.menu.add("Editar")
         popup.menu.add("Eliminar")
 
         popup.setOnMenuItemClickListener { item ->
             when (item.title) {
+                "Registrar Mantenimiento" -> {
+                    val intent = Intent(this, RegistroMantenimientoActivity::class.java)
+                    intent.putExtra("EQUIPO_ID", equipo.id)
+                    intent.putExtra("EQUIPO_NOMBRE", equipo.nombre)
+                    startActivity(intent)
+                }
                 "Editar" -> {
                     val intent = Intent(this, FormEquipoActivity::class.java)
                     intent.putExtra("EQUIPO_ID", equipo.id)
