@@ -26,6 +26,16 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.ListaEquiposActivity"
+            android:exported="false"
+            android:label="Equipos" />
+
+        <activity
+            android:name=".activities.FormEquipoActivity"
+            android:exported="false"
+            android:label="Registro de Equipo" />
+
     </application>
 
 </manifest>
