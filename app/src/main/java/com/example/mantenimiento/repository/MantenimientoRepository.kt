@@ -57,6 +57,29 @@ class MantenimientoRepository(context: Context) {
     }
 
     /**
+     * Obtiene el historial completo de mantenimientos registrados.
+     */
+    fun getAllMantenimientos(): List<Mantenimiento> {
+        val mntList = mutableListOf<Mantenimiento>()
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            DatabaseHelper.TABLE_MANTENIMIENTOS,
+            null, null, null, null, null,
+            "${DatabaseHelper.KEY_MNT_FECHA} DESC"
+        )
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    mntList.add(mapCursorToMantenimiento(it))
+                } while (it.moveToNext())
+            }
+        }
+        db.close()
+        return mntList
+    }
+
+    /**
      * Mapea el cursor actual a un objeto Mantenimiento.
      */
     private fun mapCursorToMantenimiento(cursor: Cursor): Mantenimiento {

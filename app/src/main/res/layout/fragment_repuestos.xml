@@ -4,40 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    tools:context=".activities.ListaEquiposActivity">
+    android:background="#F5F5F5">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+        android:id="@+id/appBarLayoutRep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbarEquipos"
+            android:id="@+id/toolbarRepuestos"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/color_primary"
-            app:title="Gestión de Equipos"
+            app:title="@string/menu_inventario_repuestos"
             app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEquipos"
+        android:id="@+id/rvRepuestos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        tools:listitem="@layout/item_equipo" />
+        app:layout_constraintTop_toBottomOf="@id/appBarLayoutRep"
+        tools:listitem="@layout/item_repuesto" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddEquipo"
+        android:id="@+id/fabAddRepuesto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:contentDescription="Agregar Equipo"
+        android:contentDescription="@string/hint_nombre_repuesto"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/color_secondary"
         app:layout_constraintBottom_toBottomOf="parent"

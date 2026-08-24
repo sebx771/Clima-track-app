@@ -12,9 +12,9 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_screen)
 
-        // Navegar a la lista de equipos después de 2 segundos
+        // Navegar a la pantalla principal después de 2 segundos
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, ListaEquiposActivity::class.java)
+            val intent = Intent(this, com.example.mantenimiento.MainActivity::class.java)
             startActivity(intent)
             finish()
         }, 2000)

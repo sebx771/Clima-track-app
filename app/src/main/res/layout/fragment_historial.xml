@@ -4,45 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    tools:context=".activities.ListaRepuestosActivity">
+    android:background="#F5F5F5">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayoutRep"
+        android:id="@+id/appBarLayoutHistorial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbarRepuestos"
+            android:id="@+id/toolbarHistorial"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/color_primary"
-            app:navigationIcon="@android:drawable/ic_menu_revert"
-            app:title="@string/menu_inventario_repuestos"
+            app:title="Historial de Mantenimientos"
             app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRepuestos"
+        android:id="@+id/rvHistorial"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayoutRep"
-        tools:listitem="@layout/item_repuesto" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddRepuesto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:contentDescription="@string/hint_nombre_repuesto"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/color_secondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toBottomOf="@id/appBarLayoutHistorial" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

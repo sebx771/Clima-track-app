@@ -1,71 +1,60 @@
-package com.example.mantenimiento.activities
+package com.example.mantenimiento.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mantenimiento.R
+import com.example.mantenimiento.activities.FormEquipoActivity
+import com.example.mantenimiento.activities.RegistroMantenimientoActivity
 import com.example.mantenimiento.adapters.EquipoAdapter
 import com.example.mantenimiento.models.Equipo
 import com.example.mantenimiento.repository.EquipoRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ListaEquiposActivity : AppCompatActivity() {
+class EquiposFragment : Fragment() {
 
     private lateinit var repo: EquipoRepository
     private lateinit var adapter: EquipoAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lista_equipos)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_equipos, container, false)
+        
+        repo = EquipoRepository(requireContext())
+        setupRecyclerView(view)
 
-        repo = EquipoRepository(this)
-        setupToolbar()
-        setupRecyclerView()
-
-        findViewById<FloatingActionButton>(R.id.fabAddEquipo).setOnClickListener {
-            val intent = Intent(this, FormEquipoActivity::class.java)
+        view.findViewById<FloatingActionButton>(R.id.fabAddEquipo).setOnClickListener {
+            val intent = Intent(requireContext(), FormEquipoActivity::class.java)
             startActivity(intent)
         }
+
+        return view
     }
 
-    private fun setupToolbar() {
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbarEquipos)
-        toolbar.inflateMenu(R.menu.menu_lista_equipos)
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_repuestos -> {
-                    val intent = Intent(this, ListaRepuestosActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
-    private fun setupRecyclerView() {
-        val rv = findViewById<RecyclerView>(R.id.rvEquipos)
-        rv.layoutManager = LinearLayoutManager(this)
+    private fun setupRecyclerView(view: View) {
+        val rv = view.findViewById<RecyclerView>(R.id.rvEquipos)
+        rv.layoutManager = LinearLayoutManager(requireContext())
         
         adapter = EquipoAdapter(emptyList(), 
             onItemClick = { equipo ->
                 // Futuro: Ir a historial o detalles
             },
-            onOptionsClick = { equipo, view ->
-                showOptionsMenu(equipo, view)
+            onOptionsClick = { equipo, v ->
+                showOptionsMenu(equipo, v)
             }
         )
         rv.adapter = adapter
     }
 
     private fun showOptionsMenu(equipo: Equipo, view: View) {
-        val popup = PopupMenu(this, view)
+        val popup = PopupMenu(requireContext(), view)
         popup.menu.add("Registrar Mantenimiento")
         popup.menu.add("Editar")
         popup.menu.add("Eliminar")
@@ -73,19 +62,17 @@ class ListaEquiposActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.title) {
                 "Registrar Mantenimiento" -> {
-                    val intent = Intent(this, RegistroMantenimientoActivity::class.java)
+                    val intent = Intent(requireContext(), RegistroMantenimientoActivity::class.java)
                     intent.putExtra("EQUIPO_ID", equipo.id)
                     intent.putExtra("EQUIPO_NOMBRE", equipo.nombre)
                     startActivity(intent)
                 }
                 "Editar" -> {
-                    val intent = Intent(this, FormEquipoActivity::class.java)
+                    val intent = Intent(requireContext(), FormEquipoActivity::class.java)
                     intent.putExtra("EQUIPO_ID", equipo.id)
                     startActivity(intent)
                 }
-                "Eliminar" -> {
-                    confirmDelete(equipo)
-                }
+                "Eliminar" -> confirmDelete(equipo)
             }
             true
         }
@@ -93,16 +80,14 @@ class ListaEquiposActivity : AppCompatActivity() {
     }
 
     private fun confirmDelete(equipo: Equipo) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Equipo")
-            .setMessage("¿Estás seguro de que deseas eliminar el equipo ${equipo.nombre}?")
+            .setMessage("¿Deseas eliminar ${equipo.nombre}?")
             .setPositiveButton("Eliminar") { _, _ ->
                 val result = repo.deleteEquipo(equipo.id ?: 0)
                 if (result > 0) {
-                    Toast.makeText(this, "Equipo eliminado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Equipo eliminado", Toast.LENGTH_SHORT).show()
                     loadEquipos()
-                } else {
-                    Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancelar", null)
