@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputEditText
 class FormEquipoActivity : AppCompatActivity() {
 
     private lateinit var repo: EquipoRepository
+    private var equipoId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,8 +20,32 @@ class FormEquipoActivity : AppCompatActivity() {
 
         repo = EquipoRepository(this)
 
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbarFormEquipo)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        // Revisar si es modo edición
+        equipoId = intent.getIntExtra("EQUIPO_ID", -1)
+        if (equipoId != -1) {
+            toolbar.title = "Editar Equipo"
+            loadEquipoData()
+        }
+
         findViewById<MaterialButton>(R.id.btnGuardarEquipo).setOnClickListener {
             saveEquipo()
+        }
+    }
+
+    private fun loadEquipoData() {
+        val equipo = repo.getEquipoById(equipoId)
+        equipo?.let {
+            findViewById<TextInputEditText>(R.id.etNombre).setText(it.nombre)
+            findViewById<TextInputEditText>(R.id.etMarca).setText(it.marca)
+            findViewById<TextInputEditText>(R.id.etModelo).setText(it.modelo)
+            findViewById<TextInputEditText>(R.id.etSerie).setText(it.numeroSerie)
+            findViewById<TextInputEditText>(R.id.etUbicacion).setText(it.ubicacion)
+            findViewById<TextInputEditText>(R.id.etCliente).setText(it.cliente)
         }
     }
 
@@ -38,6 +63,7 @@ class FormEquipoActivity : AppCompatActivity() {
         }
 
         val equipo = Equipo(
+            id = if (equipoId != -1) equipoId else null,
             nombre = nombre,
             marca = marca,
             modelo = modelo,
@@ -46,8 +72,13 @@ class FormEquipoActivity : AppCompatActivity() {
             cliente = cliente,
         )
 
-        val id = repo.addEquipo(equipo)
-        if (id > 0) {
+        val result = if (equipoId != -1) {
+            repo.updateEquipo(equipo).toLong()
+        } else {
+            repo.addEquipo(equipo)
+        }
+
+        if (result > 0) {
             Toast.makeText(this, "Equipo guardado correctamente", Toast.LENGTH_SHORT).show()
             finish()
         } else {
