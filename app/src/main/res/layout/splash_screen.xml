@@ -20,9 +20,9 @@
         <!-- Logo -->
         <ImageView
             android:id="@+id/logo_climatrack"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/app_logo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/logo"
             android:contentDescription="@string/logo_description" />
 
         <!-- Fila para el título con dos colores distintos -->
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/first_title"
-                android:textColor="@color/color_primary"
+                android:textColor="@color/white"
                 android:textSize="32sp"
                 android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/second_title"
-                android:textColor="@color/color_secondary"
+                android:textColor="@color/color_primary"
                 android:textSize="32sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -53,10 +53,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:text="@string/splash_screen_subtitle"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/white"
             android:textSize="16sp"
+            android:textStyle="bold"
             android:gravity="center" />
 
         <!-- Indicador de carga (Spinner circular) -->

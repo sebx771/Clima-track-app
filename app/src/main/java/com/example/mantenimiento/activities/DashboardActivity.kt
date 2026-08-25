@@ -26,10 +26,37 @@ class DashboardActivity : AppCompatActivity() {
             cerrarSesion()
         }
 
-        // Evento para conectar con el Módulo 3 más adelante
+        // Evento para conectar con el Módulo 3 más adelante (Botón en el grid)
         binding.btnVerOrdenes.setOnClickListener {
             startActivity(Intent(this, OrdenesActivity::class.java))
         }
+
+        // Evento para el botón "Órdenes" de la barra de navegación inferior
+        binding.navOrdenes.setOnClickListener {
+            startActivity(Intent(this, OrdenesActivity::class.java))
+        }
+        // ==========================================
+        // NAVEGACIÓN DESDE EL GRID (Accesos Rápidos)
+        // ==========================================
+        binding.btnVerOrdenes.setOnClickListener {
+            startActivity(Intent(this, OrdenesActivity::class.java))
+        }
+
+        binding.btnVerEquipos.setOnClickListener {
+            startActivity(Intent(this, FormEquipoActivity::class.java))
+        }
+
+        // ==========================================
+        // NAVEGACIÓN DESDE LA BARRA INFERIOR
+        // ==========================================
+        binding.navOrdenes.setOnClickListener {
+            startActivity(Intent(this, OrdenesActivity::class.java))
+        }
+
+        binding.navEquipos.setOnClickListener {
+            startActivity(Intent(this, FormEquipoActivity::class.java))
+        }
+
     }
 
     override fun onResume() {

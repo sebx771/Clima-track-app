@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F7FA">
+    android:background="#000000"> <!-- Fondo negro absoluto -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,26 +15,26 @@
         <!-- Logo / Icono Superior -->
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_marginTop="40dp"
             android:contentDescription="Logo ClimaTrack"
-            android:src="@android:drawable/ic_menu_compass"
+            android:src="@drawable/login_img"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#1E88E5" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Título principal -->
         <TextView
             android:id="@+id/tvTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="Bienvenido"
-            android:textColor="#1A237E"
-            android:textSize="28sp"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivLogo" />
@@ -43,10 +43,10 @@
             android:id="@+id/tvSubtitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="Inicia sesión para continuar"
-            android:textColor="#757575"
-            android:textSize="14sp"
+            android:textColor="#A0A0A0"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitulo" />
@@ -54,43 +54,68 @@
         <!-- Campo Usuario o Correo -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilUsuario"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
             android:hint="Usuario o correo"
+            android:textColorHint="#A0A0A0"
+            app:boxBackgroundColor="#15FFFFFF"
+            app:boxStrokeColor="#3877F1"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:hintTextColor="#3877F1"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:startIconDrawable="@android:drawable/ic_dialog_email"
+            app:startIconTint="#3877F1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitulo"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitulo">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:textColor="#FFFFFF"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Contraseña"
+            android:textColorHint="#A0A0A0"
+            app:boxBackgroundColor="#15FFFFFF"
+            app:boxStrokeColor="#3877F1"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:hintTextColor="#3877F1"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
             app:endIconMode="password_toggle"
+            app:endIconTint="#3877F1"
+            app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+            app:startIconTint="#3877F1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilUsuario"
-            app:startIconDrawable="@android:drawable/ic_lock_lock">
+            app:layout_constraintTop_toBottomOf="@id/tilUsuario">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:textColor="#FFFFFF"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,24 +124,26 @@
             android:id="@+id/cbRecordar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:text="Recordar usuario"
-            android:textColor="#616161"
+            android:textColor="#A0A0A0"
+            android:buttonTint="#3877F1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilPassword" />
 
         <!-- Botón Ingresar -->
         <Button
             android:id="@+id/btnIngresar"
+            style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#1976D2"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#3877F1"
             android:text="INGRESAR"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:cornerRadius="8dp"
+            app:cornerRadius="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cbRecordar" />
@@ -128,11 +155,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="ClimaTrack © 2026"
-            android:textColor="#9E9E9E"
-            android:textSize="12sp"
+            android:textColor="#555555"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnIngresar"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

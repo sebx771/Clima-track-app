@@ -1,6 +1,7 @@
 package com.example.mantenimiento.activities
 
 import android.R
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -28,8 +29,12 @@ class OrdenesActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        binding.btnVolverDashboard.setOnClickListener {
+        binding.navInicio.setOnClickListener {
             finish()
+        }
+
+        binding.navEquipos.setOnClickListener {
+            startActivity(Intent(this, FormEquipoActivity::class.java))
         }
 
         ordenRepository = OrdenRepository(this)
