@@ -13,16 +13,19 @@ import com.example.mantenimiento.R
 import com.example.mantenimiento.adapters.HistorialAdapter
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
+import com.example.mantenimiento.repository.OrdenRepository
 
 class HistorialFragment : Fragment() {
 
-    private lateinit var repo: MantenimientoRepository
+    private lateinit var repoMnt: MantenimientoRepository
+    private lateinit var repoOrdenes: OrdenRepository
     private lateinit var adapter: HistorialAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_historial, container, false)
         
-        repo = MantenimientoRepository(requireContext())
+        repoMnt = MantenimientoRepository(requireContext())
+        repoOrdenes = OrdenRepository(requireContext())
         setupRecyclerView(view)
 
         return view
@@ -54,7 +57,28 @@ class HistorialFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val lista = repo.getAllMantenimientos()
-        adapter.updateData(lista)
+        cargarHistorialCombinado()
+    }
+
+    private fun cargarHistorialCombinado() {
+        val listaMnt = repoMnt.getAllMantenimientos()
+        val listaOrdenesFinalizadas = repoOrdenes.obtenerOrdenesFinalizadas()
+
+        // Convertir Órdenes a formato Mantenimiento para la vista
+        val listaConvertida = listaOrdenesFinalizadas.map { orden ->
+            Mantenimiento(
+                id = orden.id,
+                equipoId = 0,
+                fecha = orden.fecha,
+                tipo = orden.tipoServicio,
+                descripcion = orden.descripcion,
+                observaciones = "Orden Finalizada: ${orden.numero}",
+                estadoFinal = orden.estado,
+                equipoNombre = orden.equipo
+            )
+        }
+
+        val total = (listaMnt + listaConvertida).sortedByDescending { it.fecha }
+        adapter.updateData(total)
     }
 }

@@ -46,6 +46,58 @@ class OrdenRepository(context: Context) {
         return lista
     }
 
+    fun obtenerOrdenesActivas(): List<Orden> {
+        val lista = mutableListOf<Orden>()
+        val db = dbHelper.readableDatabase
+        val query = "SELECT * FROM ${DatabaseHelper.TABLE_ORDENES} WHERE ${DatabaseHelper.KEY_ORD_ESTADO} != ?"
+        val cursor = db.rawQuery(query, arrayOf("FINALIZADA"))
+
+        if (cursor.moveToFirst()) {
+            do {
+                val orden = Orden(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_ID)),
+                    numero = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_NUMERO)),
+                    fecha = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_FECHA)),
+                    cliente = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_CLIENTE)),
+                    direccion = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_DIRECCION)),
+                    equipo = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_EQUIPO)),
+                    tipoServicio = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_TIPO_SERVICIO)),
+                    descripcion = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_DESCRIPCION)),
+                    estado = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_ESTADO))
+                )
+                lista.add(orden)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return lista
+    }
+
+    fun obtenerOrdenesFinalizadas(): List<Orden> {
+        val lista = mutableListOf<Orden>()
+        val db = dbHelper.readableDatabase
+        val query = "SELECT * FROM ${DatabaseHelper.TABLE_ORDENES} WHERE ${DatabaseHelper.KEY_ORD_ESTADO} = ?"
+        val cursor = db.rawQuery(query, arrayOf("FINALIZADA"))
+
+        if (cursor.moveToFirst()) {
+            do {
+                val orden = Orden(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_ID)),
+                    numero = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_NUMERO)),
+                    fecha = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_FECHA)),
+                    cliente = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_CLIENTE)),
+                    direccion = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_DIRECCION)),
+                    equipo = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_EQUIPO)),
+                    tipoServicio = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_TIPO_SERVICIO)),
+                    descripcion = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_DESCRIPCION)),
+                    estado = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ORD_ESTADO))
+                )
+                lista.add(orden)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return lista
+    }
+
     fun obtenerOrdenesFiltradas(estadoFilter: String?, tipoFilter: String?): List<Orden> {
         val lista = mutableListOf<Orden>()
         val db = dbHelper.readableDatabase
