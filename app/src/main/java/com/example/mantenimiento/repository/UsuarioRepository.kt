@@ -1,6 +1,7 @@
 package com.example.mantenimiento.repository
 
 import android.content.Context
+import android.util.Log
 import com.example.mantenimiento.database.DatabaseHelper
 import com.example.mantenimiento.models.Usuario
 
@@ -10,6 +11,7 @@ class UsuarioRepository(context: Context) {
 
     fun validarCredenciales(userInput: String, passwordInput: String): Usuario? {
         val db = dbHelper.readableDatabase
+        Log.d("UsuarioRepository", "Intentando validar: $userInput")
 
         // Permite ingresar con 'tecnico01' O 'tecnico01@climatrack.com'
         val query = """
@@ -30,7 +32,10 @@ class UsuarioRepository(context: Context) {
             val nombre = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_USR_NOMBRE))
             val rol = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_USR_ROL))
 
-            usuarioEncontrado = Usuario(id, usuario, email, nombre, rol)
+            Log.d("UsuarioRepository", "Usuario encontrado: $usuario")
+            usuarioEncontrado = Usuario(id, usuario, nombre, email, rol)
+        } else {
+            Log.w("UsuarioRepository", "No se encontró el usuario o contraseña incorrecta")
         }
 
         cursor.close()
