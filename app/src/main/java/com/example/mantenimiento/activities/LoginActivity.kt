@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+   import com.example.mantenimiento.MainActivity
 import com.example.mantenimiento.databinding.ActivityLoginBinding
 import com.example.mantenimiento.repository.UsuarioRepository
 
@@ -66,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun irAlDashboard() {
-        val intent = Intent(this, DashboardActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
