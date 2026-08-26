@@ -13,6 +13,8 @@ import com.example.mantenimiento.activities.LoginActivity
 import com.example.mantenimiento.repository.OrdenRepository
 import com.google.android.material.button.MaterialButton
 
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 class DashboardFragment : Fragment() {
 
     private lateinit var ordenRepository: OrdenRepository
@@ -33,6 +35,21 @@ class DashboardFragment : Fragment() {
 
         cargarDatosUsuario()
         cargarContadores()
+
+        // Navegación entre pestañas
+        val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
+        view.findViewById<MaterialButton>(R.id.btnVerOrdenes).setOnClickListener {
+            bottomNav.selectedItemId = R.id.nav_ordenes
+        }
+
+        view.findViewById<MaterialButton>(R.id.btnVerEquipos).setOnClickListener {
+            bottomNav.selectedItemId = R.id.nav_equipos
+        }
+
+        view.findViewById<MaterialButton>(R.id.btnGridHistorial).setOnClickListener {
+            bottomNav.selectedItemId = R.id.nav_historial
+        }
 
         view.findViewById<MaterialButton>(R.id.btnCerrarSesion).setOnClickListener {
             cerrarSesion()
