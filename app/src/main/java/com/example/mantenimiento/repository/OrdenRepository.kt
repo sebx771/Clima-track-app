@@ -8,6 +8,23 @@ class OrdenRepository(context: Context) {
 
     private val dbHelper = DatabaseHelper(context)
 
+    fun addOrden(orden: Orden): Long {
+        val db = dbHelper.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put(DatabaseHelper.KEY_ORD_NUMERO, orden.numero)
+            put(DatabaseHelper.KEY_ORD_FECHA, orden.fecha)
+            put(DatabaseHelper.KEY_ORD_CLIENTE, orden.cliente)
+            put(DatabaseHelper.KEY_ORD_DIRECCION, orden.direccion)
+            put(DatabaseHelper.KEY_ORD_EQUIPO, orden.equipo)
+            put(DatabaseHelper.KEY_ORD_TIPO_SERVICIO, orden.tipoServicio)
+            put(DatabaseHelper.KEY_ORD_DESCRIPCION, orden.descripcion)
+            put(DatabaseHelper.KEY_ORD_ESTADO, orden.estado)
+        }
+        val id = db.insert(DatabaseHelper.TABLE_ORDENES, null, values)
+        db.close()
+        return id
+    }
+
     fun contarOrdenesPorEstado(estado: String): Int {
         val db = dbHelper.readableDatabase
         val query = "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_ORDENES} WHERE ${DatabaseHelper.KEY_ORD_ESTADO} = ?"
