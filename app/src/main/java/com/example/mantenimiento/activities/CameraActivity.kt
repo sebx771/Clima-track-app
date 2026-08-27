@@ -1,25 +1,43 @@
 package com.example.mantenimiento.activities
 
+import android.Manifest
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.mantenimiento.databinding.ActivityCameraBinding
 import java.io.File
-import java.io.FileOutputStream
 
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCameraBinding
+    private var photoFile: File? = null
+    private var photoUri: Uri? = null
 
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            binding.imgPreview.setImageBitmap(imageBitmap)
-            saveImage(imageBitmap)
+    // Lanzador para solicitar permiso de cámara
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            abrirCamara()
+        } else {
+            Toast.makeText(this, "Permiso de cámara denegado. No se puede capturar la foto.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Lanzador para tomar la foto en alta resolución
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            binding.imgPreview.setImageURI(photoUri)
+            finalizarConResultado()
+        } else {
+            Toast.makeText(this, "Captura cancelada", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -29,29 +47,52 @@ class CameraActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnCapture.setOnClickListener {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            try {
-                takePictureLauncher.launch(takePictureIntent)
-            } catch (e: Exception) {
-                Toast.makeText(this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show()
+            checkCameraPermission()
+        }
+    }
+
+    private fun checkCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                abrirCamara()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
 
-    private fun saveImage(bitmap: Bitmap) {
-        val fileName = "evidencia_${System.currentTimeMillis()}.jpg"
-        val file = File(getExternalFilesDir(null), fileName)
+    private fun abrirCamara() {
+        photoFile = crearArchivoImagen()
+        photoFile?.let { file ->
+            photoUri = FileProvider.getUriForFile(
+                this,
+                "com.example.mantenimiento.fileprovider",
+                file
+            )
+            photoUri?.let { takePictureLauncher.launch(it) }
+        }
+    }
 
-        try {
-            val out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            out.flush()
-            out.close()
-            Toast.makeText(this, "Foto guardada en: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-            // Aquí se debería actualizar la DB con la ruta: file.absolutePath
+    private fun crearArchivoImagen(): File? {
+        val fileName = "evidencia_${System.currentTimeMillis()}.jpg"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return try {
+            File(storageDir, fileName)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Error al guardar foto", Toast.LENGTH_SHORT).show()
+            null
+        }
+    }
+
+    private fun finalizarConResultado() {
+        photoFile?.let {
+            val resultIntent = Intent().apply {
+                putExtra("FILE_PATH", it.absolutePath)
+            }
+            setResult(RESULT_OK, resultIntent)
+            Toast.makeText(this, "Foto guardada correctamente", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }
