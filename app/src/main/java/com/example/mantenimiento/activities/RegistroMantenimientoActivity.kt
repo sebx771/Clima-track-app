@@ -1,11 +1,16 @@
 package com.example.mantenimiento.activities
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.R
 import com.example.mantenimiento.models.Mantenimiento
@@ -19,6 +24,30 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
 
     private lateinit var repo: MantenimientoRepository
     private var equipoId: Int = -1
+    private var pathFoto: String? = null
+    private var pathFirma: String? = null
+
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            pathFoto = result.data?.getStringExtra("FILE_PATH")
+            pathFoto?.let {
+                val ivPreview = findViewById<ImageView>(R.id.ivPreviewFoto)
+                ivPreview.visibility = View.VISIBLE
+                ivPreview.setImageBitmap(BitmapFactory.decodeFile(it))
+            }
+        }
+    }
+
+    private val signatureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            pathFirma = result.data?.getStringExtra("FILE_PATH")
+            pathFirma?.let {
+                val ivPreview = findViewById<ImageView>(R.id.ivPreviewFirma)
+                ivPreview.visibility = View.VISIBLE
+                ivPreview.setImageBitmap(BitmapFactory.decodeFile(it))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +64,16 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvEquipoInfo).text = getString(R.string.equipo_label, equipoNombre)
 
         setupForm()
+
+        findViewById<MaterialButton>(R.id.btnCapturarEvidencia).setOnClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            cameraLauncher.launch(intent)
+        }
+
+        findViewById<MaterialButton>(R.id.btnRegistrarFirma).setOnClickListener {
+            val intent = Intent(this, SignatureActivity::class.java)
+            signatureLauncher.launch(intent)
+        }
 
         findViewById<MaterialButton>(R.id.btnFinalizarMnt).setOnClickListener {
             saveMantenimiento()
@@ -90,6 +129,8 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
             descripcion = desc,
             observaciones = obs,
             estadoFinal = estado,
+            fotoEvidencia = pathFoto,
+            firmaCliente = pathFirma
         )
 
         val id = repo.addMantenimiento(mnt)
