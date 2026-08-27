@@ -1,9 +1,11 @@
 package com.example.mantenimiento.fragments
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import com.example.mantenimiento.adapters.HistorialAdapter
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
 import com.example.mantenimiento.repository.OrdenRepository
+import java.io.File
 
 class HistorialFragment : Fragment() {
 
@@ -48,6 +51,28 @@ class HistorialFragment : Fragment() {
         dialogView.findViewById<TextView>(R.id.tvDetalleDesc).text = mnt.descripcion
         dialogView.findViewById<TextView>(R.id.tvDetalleObs).text = mnt.observaciones.ifEmpty { getString(R.string.no_observaciones) }
         dialogView.findViewById<TextView>(R.id.tvDetalleEstado).text = mnt.estadoFinal
+
+        // Cargar Foto
+        if (!mnt.fotoEvidencia.isNullOrEmpty()) {
+            val file = File(mnt.fotoEvidencia)
+            if (file.exists()) {
+                dialogView.findViewById<TextView>(R.id.tvEvidenciasLabel).visibility = View.VISIBLE
+                val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetalleFoto)
+                ivFoto.visibility = View.VISIBLE
+                ivFoto.setImageBitmap(BitmapFactory.decodeFile(mnt.fotoEvidencia))
+            }
+        }
+
+        // Cargar Firma
+        if (!mnt.firmaCliente.isNullOrEmpty()) {
+            val file = File(mnt.firmaCliente)
+            if (file.exists()) {
+                dialogView.findViewById<TextView>(R.id.tvFirmaLabel).visibility = View.VISIBLE
+                val ivFirma = dialogView.findViewById<ImageView>(R.id.ivDetalleFirma)
+                ivFirma.visibility = View.VISIBLE
+                ivFirma.setImageBitmap(BitmapFactory.decodeFile(mnt.firmaCliente))
+            }
+        }
 
         AlertDialog.Builder(requireContext())
             .setView(dialogView)

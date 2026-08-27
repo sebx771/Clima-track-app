@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Descripción Técnica"
+            android:text="@string/hint_descripcion_mnt"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Observaciones"
+            android:text="@string/hint_observaciones_mnt"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Estado Final"
+            android:text="@string/hint_estado_final"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -87,6 +87,48 @@
             android:textColor="@color/color_secondary"
             android:textSize="14sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvEvidenciasLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_evidencias_fotos"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/ivDetalleFoto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="#EEEEEE"
+            android:contentDescription="Foto de evidencia" />
+
+        <TextView
+            android:id="@+id/tvFirmaLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_firma_cliente"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/ivDetalleFirma"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:background="#EEEEEE"
+            android:contentDescription="Firma del cliente" />
 
     </LinearLayout>
 </ScrollView>
