@@ -1,8 +1,10 @@
 package com.example.mantenimiento.activities
 
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.databinding.ActivitySignatureBinding
@@ -30,16 +32,20 @@ class SignatureActivity : AppCompatActivity() {
 
     private fun saveSignature(bitmap: Bitmap) {
         val fileName = "firma_${System.currentTimeMillis()}.png"
-        val file = File(getExternalFilesDir(null), fileName)
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File(storageDir, fileName)
 
         try {
             val out = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             out.flush()
             out.close()
-            Toast.makeText(this, "Firma guardada en: ${file.absolutePath}", Toast.LENGTH_LONG).show()
             
-            // Aquí se debería actualizar la DB con la ruta: file.absolutePath
+            val resultIntent = Intent().apply {
+                putExtra("FILE_PATH", file.absolutePath)
+            }
+            setResult(RESULT_OK, resultIntent)
+            Toast.makeText(this, "Firma guardada", Toast.LENGTH_SHORT).show()
             finish()
         } catch (e: Exception) {
             e.printStackTrace()
