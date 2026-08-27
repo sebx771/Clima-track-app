@@ -1,5 +1,6 @@
 package com.example.mantenimiento.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mantenimiento.R
+import com.example.mantenimiento.activities.FormOrdenActivity
 import com.example.mantenimiento.adapters.OrdenesAdapter
 import com.example.mantenimiento.repository.OrdenRepository
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class OrdenesFragment : Fragment() {
 
@@ -22,6 +25,7 @@ class OrdenesFragment : Fragment() {
     private lateinit var rvOrdenes: RecyclerView
     private lateinit var spinnerEstado: Spinner
     private lateinit var spinnerTipo: Spinner
+    private lateinit var fabAddOrden: FloatingActionButton
 
     private val opcionesEstado = arrayOf("TODOS", "PENDIENTE", "EN PROCESO", "CANCELADA") // Quitamos FINALIZADA
     private val opcionesTipo = arrayOf("TODOS", "PREVENTIVO", "CORRECTIVO", "INSTALACION", "DIAGNOSTICO")
@@ -33,9 +37,15 @@ class OrdenesFragment : Fragment() {
         rvOrdenes = view.findViewById(R.id.rvOrdenes)
         spinnerEstado = view.findViewById(R.id.spinnerEstado)
         spinnerTipo = view.findViewById(R.id.spinnerTipo)
+        fabAddOrden = view.findViewById(R.id.fabAddOrden)
 
         setupRecyclerView()
         setupSpinners()
+
+        fabAddOrden.setOnClickListener {
+            val intent = Intent(requireContext(), FormOrdenActivity::class.java)
+            startActivity(intent)
+        }
 
         return view
     }
