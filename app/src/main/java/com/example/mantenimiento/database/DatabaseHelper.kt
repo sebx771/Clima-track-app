@@ -12,7 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // nombre y version de la db
         private const val DATABASE_NAME = "climatrack.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
 
         // Nombres de Tablas
         const val TABLE_USUARIOS = "usuarios"
@@ -62,6 +62,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val KEY_MNT_DESC = "descripcion"
         const val KEY_MNT_OBS = "observaciones"
         const val KEY_MNT_ESTADO = "estado_final"
+        const val KEY_MNT_FOTO = "foto_evidencia"
+        const val KEY_MNT_FIRMA = "firma_cliente"
 
         // Columnas Tabla Repuestos
         const val KEY_REP_ID = "id"
@@ -131,6 +133,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $KEY_MNT_DESC TEXT,
                 $KEY_MNT_OBS TEXT,
                 $KEY_MNT_ESTADO TEXT,
+                $KEY_MNT_FOTO TEXT,
+                $KEY_MNT_FIRMA TEXT,
                 FOREIGN KEY($KEY_MNT_EQP_ID) REFERENCES $TABLE_EQUIPOS($KEY_EQP_ID)
             )
         """.trimIndent()
@@ -195,6 +199,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             ('Filtro de Aire 24K', 'FIL-001', 50),
             ('Gas R-410A (Kg)', 'GAS-410', 20),
             ('Capacitor 45uF', 'CAP-045', 15)
+        """.trimIndent())
+
+        // 11. Insertar mantenimientos de prueba con evidencias
+        db.execSQL("""
+            INSERT INTO $TABLE_MANTENIMIENTOS ($KEY_MNT_EQP_ID, $KEY_MNT_FECHA, $KEY_MNT_TIPO, $KEY_MNT_DESC, $KEY_MNT_OBS, $KEY_MNT_ESTADO, $KEY_MNT_FOTO, $KEY_MNT_FIRMA)
+            VALUES 
+            (1, '20/08/2026', 'PREVENTIVO', 'Limpieza de filtros y serpentín', 'Todo en orden', 'OPERATIVO', 'sample_foto_1.jpg', 'sample_firma_1.png'),
+            (2, '21/08/2026', 'CORRECTIVO', 'Cambio de capacitor de arranque', 'Se recomienda revisión en 15 días', 'OPERATIVO', 'sample_foto_2.jpg', 'sample_firma_2.png')
         """.trimIndent())
     }
 

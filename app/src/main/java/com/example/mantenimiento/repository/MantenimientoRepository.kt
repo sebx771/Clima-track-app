@@ -24,6 +24,8 @@ class MantenimientoRepository(context: Context) {
             put(DatabaseHelper.KEY_MNT_DESC, mantenimiento.descripcion)
             put(DatabaseHelper.KEY_MNT_OBS, mantenimiento.observaciones)
             put(DatabaseHelper.KEY_MNT_ESTADO, mantenimiento.estadoFinal)
+            put(DatabaseHelper.KEY_MNT_FOTO, mantenimiento.fotoEvidencia)
+            put(DatabaseHelper.KEY_MNT_FIRMA, mantenimiento.firmaCliente)
         }
         val id = db.insert(DatabaseHelper.TABLE_MANTENIMIENTOS, null, values)
         db.close()
@@ -101,6 +103,8 @@ class MantenimientoRepository(context: Context) {
             descripcion = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_DESC)),
             observaciones = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_OBS)),
             estadoFinal = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_ESTADO)),
+            fotoEvidencia = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_FOTO)),
+            firmaCliente = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_FIRMA))
         )
     }
 }
