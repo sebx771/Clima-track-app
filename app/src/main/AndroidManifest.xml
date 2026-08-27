@@ -62,6 +62,11 @@
             android:exported="false"
             android:label="Firma de Aceptación" />
 
+        <activity
+            android:name=".activities.FormOrdenActivity"
+            android:exported="false"
+            android:label="@string/title_nueva_orden" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mantenimiento.fileprovider"

@@ -33,4 +33,13 @@
     <string name="btn_registrar_firma">Firma Cliente</string>
     <string name="label_evidencias_fotos">Evidencias Fotográficas</string>
     <string name="label_firma_cliente">Firma del Cliente</string>
+    <string name="title_nueva_orden">Nueva Orden de Trabajo</string>
+    <string name="hint_numero_ot">Número de OT (ej. OT-001)</string>
+    <string name="hint_cliente">Nombre del Cliente</string>
+    <string name="hint_direccion">Dirección del Servicio</string>
+    <string name="hint_equipo_orden">Equipo a Intervenir</string>
+    <string name="btn_guardar_orden">GUARDAR ORDEN</string>
+    <string name="msg_orden_exito">Orden creada correctamente</string>
+    <string name="msg_orden_error">Error al crear la orden</string>
+    <string name="cd_nueva_orden">Nueva Orden</string>
 </resources>
