@@ -28,4 +28,9 @@
     <string name="fecha_tipo_format">%1$s - %2$s</string>
     <string name="no_observaciones">Sin observaciones</string>
     <string name="btn_cerrar">Cerrar</string>
+    <string name="label_evidencias">Evidencias y Aceptación</string>
+    <string name="btn_capturar_evidencia">Foto Evidencia</string>
+    <string name="btn_registrar_firma">Firma Cliente</string>
+    <string name="label_evidencias_fotos">Evidencias Fotográficas</string>
+    <string name="label_firma_cliente">Firma del Cliente</string>
 </resources>
