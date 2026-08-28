@@ -67,6 +67,21 @@
             android:exported="false"
             android:label="@string/title_nueva_orden" />
 
+        <activity
+            android:name=".activities.FormUsuarioActivity"
+            android:exported="false"
+            android:label="Registrar Usuario" />
+
+        <activity
+            android:name=".activities.AsignarOrdenActivity"
+            android:exported="false"
+            android:label="Asignar Orden" />
+
+        <activity
+            android:name=".activities.ResumenServicioActivity"
+            android:exported="false"
+            android:label="Resumen del Servicio" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mantenimiento.fileprovider"
