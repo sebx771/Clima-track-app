@@ -94,6 +94,22 @@
                     android:minLines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Diagnóstico -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Diagnóstico Técnico">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDiagnosticoMnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- Observaciones -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -108,6 +124,36 @@
                     android:gravity="top"
                     android:inputType="textMultiLine"
                     android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Recomendaciones -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Recomendaciones">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRecomendacionesMnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Tiempo Empleado -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Tiempo Empleado (Horas)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTiempoMnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Estado Final -->
@@ -144,21 +190,11 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCapturarEvidencia"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
                     android:text="@string/btn_capturar_evidencia"
                     app:icon="@android:drawable/ic_menu_camera" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRegistrarFirma"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/btn_registrar_firma"
-                    app:icon="@android:drawable/ic_menu_edit" />
             </LinearLayout>
 
             <LinearLayout
@@ -170,22 +206,12 @@
 
                 <ImageView
                     android:id="@+id/ivPreviewFoto"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:visibility="gone"
                     android:scaleType="centerCrop"
                     android:background="#EEEEEE"
                     android:contentDescription="Vista previa de foto" />
-
-                <ImageView
-                    android:id="@+id/ivPreviewFirma"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:visibility="gone"
-                    android:scaleType="centerInside"
-                    android:background="#EEEEEE"
-                    android:contentDescription="Vista previa de firma" />
             </LinearLayout>
 
         </LinearLayout>

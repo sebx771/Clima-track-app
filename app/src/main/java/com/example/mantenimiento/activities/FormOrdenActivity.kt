@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.R
 import com.example.mantenimiento.models.Orden
 import com.example.mantenimiento.repository.OrdenRepository
+import com.example.mantenimiento.security.AccessControl
+import com.example.mantenimiento.security.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import java.util.Calendar
@@ -17,9 +19,18 @@ import java.util.Locale
 class FormOrdenActivity : AppCompatActivity() {
 
     private lateinit var repo: OrdenRepository
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sessionManager = SessionManager(this)
+        if (!AccessControl.canManageInventory(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Solo el administrador puede crear órdenes", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_form_orden)
 
         repo = OrdenRepository(this)

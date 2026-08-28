@@ -8,17 +8,24 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.databinding.ActivitySignatureBinding
+import com.example.mantenimiento.models.Mantenimiento
+import com.example.mantenimiento.repository.MantenimientoRepository
 import java.io.File
 import java.io.FileOutputStream
 
 class SignatureActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignatureBinding
+    private lateinit var mantenimiento: Mantenimiento
+    private lateinit var repo: MantenimientoRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignatureBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        repo = MantenimientoRepository(this)
+        mantenimiento = intent.getSerializableExtra("MANTENIMIENTO") as Mantenimiento
 
         binding.btnClear.setOnClickListener {
             binding.signatureView.clear()
@@ -26,11 +33,11 @@ class SignatureActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             val bitmap = binding.signatureView.getSignatureBitmap()
-            saveSignature(bitmap)
+            saveSignatureAndFinish(bitmap)
         }
     }
 
-    private fun saveSignature(bitmap: Bitmap) {
+    private fun saveSignatureAndFinish(bitmap: Bitmap) {
         val fileName = "firma_${System.currentTimeMillis()}.png"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val file = File(storageDir, fileName)
@@ -41,12 +48,21 @@ class SignatureActivity : AppCompatActivity() {
             out.flush()
             out.close()
             
-            val resultIntent = Intent().apply {
-                putExtra("FILE_PATH", file.absolutePath)
+            // Actualizar objeto mantenimiento con la ruta de la firma
+            val mntFinal = mantenimiento.copy(firmaCliente = file.absolutePath)
+            
+            // GUARDAR TODO EN DB
+            val id = repo.addMantenimiento(mntFinal)
+            
+            if (id > 0) {
+                Toast.makeText(this, "Mantenimiento y Firma guardados con éxito", Toast.LENGTH_LONG).show()
+                // Regresar al inicio o historial
+                val intent = Intent(this, com.example.mantenimiento.MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Error al guardar en la base de datos", Toast.LENGTH_SHORT).show()
             }
-            setResult(RESULT_OK, resultIntent)
-            Toast.makeText(this, "Firma guardada", Toast.LENGTH_SHORT).show()
-            finish()
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Error al guardar firma", Toast.LENGTH_SHORT).show()

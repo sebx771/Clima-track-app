@@ -16,22 +16,31 @@ import com.example.mantenimiento.activities.FormRepuestoActivity
 import com.example.mantenimiento.adapters.RepuestoAdapter
 import com.example.mantenimiento.models.Repuesto
 import com.example.mantenimiento.repository.RepuestoRepository
+import com.example.mantenimiento.security.AccessControl
+import com.example.mantenimiento.security.SessionManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class RepuestosFragment : Fragment() {
 
     private lateinit var repo: RepuestoRepository
+    private lateinit var sessionManager: SessionManager
     private lateinit var adapter: RepuestoAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_repuestos, container, false)
 
+        sessionManager = SessionManager(requireContext())
         repo = RepuestoRepository(requireContext())
         setupRecyclerView(view)
 
-        view.findViewById<FloatingActionButton>(R.id.fabAddRepuesto).setOnClickListener {
-            val intent = Intent(requireContext(), FormRepuestoActivity::class.java)
-            startActivity(intent)
+        val fab = view.findViewById<FloatingActionButton>(R.id.fabAddRepuesto)
+        if (AccessControl.canManageInventory(sessionManager.getUserRole())) {
+            fab.setOnClickListener {
+                val intent = Intent(requireContext(), FormRepuestoActivity::class.java)
+                startActivity(intent)
+            }
+        } else {
+            fab.visibility = View.GONE
         }
 
         return view
@@ -42,7 +51,11 @@ class RepuestosFragment : Fragment() {
         rv.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = RepuestoAdapter(emptyList()) { repuesto, v ->
-            showOptionsMenu(repuesto, v)
+            if (AccessControl.canManageInventory(sessionManager.getUserRole())) {
+                showOptionsMenu(repuesto, v)
+            } else {
+                Toast.makeText(requireContext(), "Sin permisos para editar", Toast.LENGTH_SHORT).show()
+            }
         }
         rv.adapter = adapter
     }

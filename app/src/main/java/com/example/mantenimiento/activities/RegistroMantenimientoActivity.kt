@@ -24,25 +24,14 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
 
     private lateinit var repo: MantenimientoRepository
     private var equipoId: Int = -1
+    private var equipoNombre: String = ""
     private var pathFoto: String? = null
-    private var pathFirma: String? = null
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
             pathFoto = result.data?.getStringExtra("FILE_PATH")
             pathFoto?.let {
                 val ivPreview = findViewById<ImageView>(R.id.ivPreviewFoto)
-                ivPreview.visibility = View.VISIBLE
-                ivPreview.setImageBitmap(BitmapFactory.decodeFile(it))
-            }
-        }
-    }
-
-    private val signatureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            pathFirma = result.data?.getStringExtra("FILE_PATH")
-            pathFirma?.let {
-                val ivPreview = findViewById<ImageView>(R.id.ivPreviewFirma)
                 ivPreview.visibility = View.VISIBLE
                 ivPreview.setImageBitmap(BitmapFactory.decodeFile(it))
             }
@@ -60,7 +49,7 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
 
         // Recibir datos del equipo
         equipoId = intent.getIntExtra("EQUIPO_ID", -1)
-        val equipoNombre = intent.getStringExtra("EQUIPO_NOMBRE") ?: "Desconocido"
+        equipoNombre = intent.getStringExtra("EQUIPO_NOMBRE") ?: "Desconocido"
         findViewById<TextView>(R.id.tvEquipoInfo).text = getString(R.string.equipo_label, equipoNombre)
 
         setupForm()
@@ -68,11 +57,6 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.btnCapturarEvidencia).setOnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
             cameraLauncher.launch(intent)
-        }
-
-        findViewById<MaterialButton>(R.id.btnRegistrarFirma).setOnClickListener {
-            val intent = Intent(this, SignatureActivity::class.java)
-            signatureLauncher.launch(intent)
         }
 
         findViewById<MaterialButton>(R.id.btnFinalizarMnt).setOnClickListener {
@@ -114,7 +98,10 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
         val fecha = findViewById<TextInputEditText>(R.id.etFechaMnt).text.toString()
         val tipo = findViewById<AutoCompleteTextView>(R.id.spinnerTipoMnt).text.toString()
         val desc = findViewById<TextInputEditText>(R.id.etDescripcionMnt).text.toString()
+        val diag = findViewById<TextInputEditText>(R.id.etDiagnosticoMnt).text.toString()
         val obs = findViewById<TextInputEditText>(R.id.etObservacionesMnt).text.toString()
+        val recom = findViewById<TextInputEditText>(R.id.etRecomendacionesMnt).text.toString()
+        val tiempo = findViewById<TextInputEditText>(R.id.etTiempoMnt).text.toString()
         val estado = findViewById<AutoCompleteTextView>(R.id.spinnerEstadoFinal).text.toString()
 
         if (fecha.isEmpty() || tipo.isEmpty() || desc.isEmpty()) {
@@ -124,21 +111,23 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
 
         val mnt = Mantenimiento(
             equipoId = equipoId,
+            equipoNombre = equipoNombre,
             fecha = fecha,
             tipo = tipo,
             descripcion = desc,
+            diagnostico = diag,
             observaciones = obs,
+            recomendaciones = recom,
+            tiempoEmpleado = tiempo,
             estadoFinal = estado,
             fotoEvidencia = pathFoto,
-            firmaCliente = pathFirma
+            firmaCliente = null // Se capturará en el siguiente paso
         )
 
-        val id = repo.addMantenimiento(mnt)
-        if (id > 0) {
-            Toast.makeText(this, getString(R.string.msg_mantenimiento_exito), Toast.LENGTH_SHORT).show()
-            finish()
-        } else {
-            Toast.makeText(this, getString(R.string.msg_mantenimiento_error), Toast.LENGTH_SHORT).show()
-        }
+        // En lugar de guardar, vamos al RESUMEN
+        val intent = Intent(this, ResumenServicioActivity::class.java)
+        intent.putExtra("MANTENIMIENTO", mnt)
+        startActivity(intent)
+        finish()
     }
 }

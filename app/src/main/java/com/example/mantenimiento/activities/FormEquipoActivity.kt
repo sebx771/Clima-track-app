@@ -6,16 +6,27 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.R
 import com.example.mantenimiento.models.Equipo
 import com.example.mantenimiento.repository.EquipoRepository
+import com.example.mantenimiento.security.AccessControl
+import com.example.mantenimiento.security.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
 class FormEquipoActivity : AppCompatActivity() {
 
     private lateinit var repo: EquipoRepository
+    private lateinit var sessionManager: SessionManager
     private var equipoId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sessionManager = SessionManager(this)
+        if (!AccessControl.canCreateEquipment(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_form_equipo)
 
         repo = EquipoRepository(this)
