@@ -16,17 +16,21 @@ import com.example.mantenimiento.adapters.HistorialAdapter
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
 import com.example.mantenimiento.repository.OrdenRepository
+import com.example.mantenimiento.security.Role
+import com.example.mantenimiento.security.SessionManager
 import java.io.File
 
 class HistorialFragment : Fragment() {
 
     private lateinit var repoMnt: MantenimientoRepository
     private lateinit var repoOrdenes: OrdenRepository
+    private lateinit var sessionManager: SessionManager
     private lateinit var adapter: HistorialAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_historial, container, false)
         
+        sessionManager = SessionManager(requireContext())
         repoMnt = MantenimientoRepository(requireContext())
         repoOrdenes = OrdenRepository(requireContext())
         setupRecyclerView(view)
@@ -86,8 +90,20 @@ class HistorialFragment : Fragment() {
     }
 
     private fun cargarHistorialCombinado() {
-        val listaMnt = repoMnt.getAllMantenimientos()
-        val listaOrdenesFinalizadas = repoOrdenes.obtenerOrdenesFinalizadas()
+        val role = sessionManager.getUserRole()
+        val empresa = sessionManager.getEmpresaCliente() ?: "ACME S.A.S"
+
+        val listaMnt = if (role == Role.CLIENTE) {
+            repoMnt.getMantenimientosByCliente(empresa)
+        } else {
+            repoMnt.getAllMantenimientos()
+        }
+
+        val listaOrdenesFinalizadas = if (role == Role.CLIENTE) {
+            repoOrdenes.obtenerOrdenesFinalizadasPorCliente(empresa)
+        } else {
+            repoOrdenes.obtenerOrdenesFinalizadas()
+        }
 
         // Convertir Órdenes a formato Mantenimiento para la vista
         val listaConvertida = listaOrdenesFinalizadas.map { orden ->

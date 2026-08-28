@@ -5,25 +5,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-   import com.example.mantenimiento.MainActivity
+import com.example.mantenimiento.MainActivity
 import com.example.mantenimiento.databinding.ActivityLoginBinding
 import com.example.mantenimiento.repository.UsuarioRepository
+import com.example.mantenimiento.security.SessionManager
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var usuarioRepository: UsuarioRepository
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sessionManager = SessionManager(this)
 
-        val prefs = getSharedPreferences("ClimaTrackPrefs", Context.MODE_PRIVATE)
-        val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
-
-        if (isLoggedIn) {
+        if (sessionManager.isLoggedIn()) {
             irAlDashboard()
             return
         }
@@ -49,15 +49,7 @@ class LoginActivity : AppCompatActivity() {
             val usuarioValido = usuarioRepository.validarCredenciales(inputUserOrEmail, inputPassword)
 
             if (usuarioValido != null) {
-                // Guardar la sesión en SharedPreferences
-                prefs.edit().apply {
-                    putBoolean("isLoggedIn", true)
-                    putInt("userId", usuarioValido.id)
-                    putString("nombreTecnico", usuarioValido.nombre)
-                    putString("emailTecnico", usuarioValido.email)
-                    apply()
-                }
-
+                sessionManager.saveSession(usuarioValido)
                 Toast.makeText(this, "Bienvenido ${usuarioValido.nombre}", Toast.LENGTH_SHORT).show()
                 irAlDashboard()
             } else {

@@ -1,5 +1,6 @@
 package com.example.mantenimiento.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,13 +15,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mantenimiento.R
 import com.example.mantenimiento.activities.FormOrdenActivity
+import com.example.mantenimiento.activities.AsignarOrdenActivity
 import com.example.mantenimiento.adapters.OrdenesAdapter
 import com.example.mantenimiento.repository.OrdenRepository
+import com.example.mantenimiento.security.AccessControl
+import com.example.mantenimiento.security.Role
+import com.example.mantenimiento.security.SessionManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class OrdenesFragment : Fragment() {
 
     private lateinit var ordenRepository: OrdenRepository
+    private lateinit var sessionManager: SessionManager
     private lateinit var ordenesAdapter: OrdenesAdapter
     private lateinit var rvOrdenes: RecyclerView
     private lateinit var spinnerEstado: Spinner
@@ -31,6 +37,12 @@ class OrdenesFragment : Fragment() {
     private val opcionesTipo = arrayOf("TODOS", "PREVENTIVO", "CORRECTIVO", "INSTALACION", "DIAGNOSTICO")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        sessionManager = SessionManager(requireContext())
+        if (!AccessControl.canViewOrders(sessionManager.getUserRole())) {
+            Toast.makeText(requireContext(), "Acceso denegado", Toast.LENGTH_SHORT).show()
+            return null
+        }
+        
         val view = inflater.inflate(R.layout.fragment_ordenes, container, false)
 
         ordenRepository = OrdenRepository(requireContext())
@@ -42,17 +54,32 @@ class OrdenesFragment : Fragment() {
         setupRecyclerView()
         setupSpinners()
 
-        fabAddOrden.setOnClickListener {
-            val intent = Intent(requireContext(), FormOrdenActivity::class.java)
-            startActivity(intent)
+        if (AccessControl.canManageInventory(sessionManager.getUserRole())) {
+            fabAddOrden.setOnClickListener {
+                val intent = Intent(requireContext(), FormOrdenActivity::class.java)
+                startActivity(intent)
+            }
+        } else {
+            fabAddOrden.visibility = View.GONE
         }
 
         return view
     }
 
     private fun setupRecyclerView() {
+        val role = sessionManager.getUserRole()
         ordenesAdapter = OrdenesAdapter(emptyList()) { orden ->
-            Toast.makeText(requireContext(), "Orden: ${orden.numero}", Toast.LENGTH_SHORT).show()
+            if (role == Role.ADMIN) {
+                // El Admin puede asignar la orden
+                val intent = Intent(requireContext(), AsignarOrdenActivity::class.java)
+                intent.putExtra("ORDEN_ID", orden.id)
+                intent.putExtra("ORDEN_NUMERO", orden.numero)
+                intent.putExtra("ORDEN_CLIENTE", orden.cliente)
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "Orden: ${orden.numero}", Toast.LENGTH_SHORT).show()
+                // Futuro: El técnico abre el Registro de Mantenimiento
+            }
         }
         rvOrdenes.layoutManager = LinearLayoutManager(requireContext())
         rvOrdenes.adapter = ordenesAdapter
@@ -78,14 +105,22 @@ class OrdenesFragment : Fragment() {
     }
 
     private fun aplicarFiltros() {
+        val role = sessionManager.getUserRole()
         val estado = spinnerEstado.selectedItem.toString()
         val tipo = spinnerTipo.selectedItem.toString()
 
-        // Si es TODOS, traemos activas (que excluye FINALIZADA)
-        val lista = if (estado == "TODOS") {
-             ordenRepository.obtenerOrdenesActivas()
-        } else {
-             ordenRepository.obtenerOrdenesFiltradas(estado, tipo)
+        val lista = when {
+            role == Role.TECNICO -> {
+                // El técnico solo ve sus órdenes asignadas
+                val userId = requireContext().getSharedPreferences("ClimaTrackPrefs", Context.MODE_PRIVATE).getInt("userId", -1)
+                ordenRepository.obtenerOrdenesAsignadas(userId)
+            }
+            estado == "TODOS" -> {
+                ordenRepository.obtenerOrdenesActivas()
+            }
+            else -> {
+                ordenRepository.obtenerOrdenesFiltradas(estado, tipo)
+            }
         }
         
         ordenesAdapter.actualizarLista(lista)

@@ -13,20 +13,30 @@ import com.example.mantenimiento.fragments.EquiposFragment
 import com.example.mantenimiento.fragments.HistorialFragment
 import com.example.mantenimiento.fragments.OrdenesFragment
 import com.example.mantenimiento.fragments.RepuestosFragment
+import com.example.mantenimiento.fragments.UsuariosFragment
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
+import com.example.mantenimiento.security.AccessControl
+import com.example.mantenimiento.security.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        sessionManager = SessionManager(this)
         generarDatosDePruebaConImagenes()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        
+        // Configurar menú según rol
+        setupBottomNavMenu(bottomNav)
         
         // Manejar navegación desde Intent (Dashboard)
         val fragmentToLoad = intent.getStringExtra("FRAGMENT_TO_LOAD")
@@ -34,8 +44,13 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             when (fragmentToLoad) {
                 "ordenes" -> {
-                    loadFragment(OrdenesFragment())
-                    bottomNav.selectedItemId = R.id.nav_ordenes
+                    if (AccessControl.canViewOrders(sessionManager.getUserRole())) {
+                        loadFragment(OrdenesFragment())
+                        bottomNav.selectedItemId = R.id.nav_ordenes
+                    } else {
+                        loadFragment(DashboardFragment())
+                        bottomNav.selectedItemId = R.id.nav_inicio
+                    }
                 }
                 "equipos" -> {
                     loadFragment(EquiposFragment())
@@ -45,8 +60,17 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(HistorialFragment())
                     bottomNav.selectedItemId = R.id.nav_historial
                 }
+                "usuarios" -> {
+                    if (sessionManager.getUserRole() == com.example.mantenimiento.security.Role.ADMIN) {
+                        loadFragment(UsuariosFragment())
+                        bottomNav.selectedItemId = R.id.nav_usuarios
+                    } else {
+                        loadFragment(DashboardFragment())
+                        bottomNav.selectedItemId = R.id.nav_inicio
+                    }
+                }
                 else -> {
-                    loadFragment(DashboardFragment()) // Ahora el Dashboard es el fragmento inicial
+                    loadFragment(DashboardFragment())
                     bottomNav.selectedItemId = R.id.nav_inicio
                 }
             }
@@ -58,8 +82,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_ordenes -> loadFragment(OrdenesFragment())
                 R.id.nav_equipos -> loadFragment(EquiposFragment())
                 R.id.nav_historial -> loadFragment(HistorialFragment())
+                R.id.nav_usuarios -> loadFragment(UsuariosFragment())
             }
             true
+        }
+    }
+
+    private fun setupBottomNavMenu(bottomNav: BottomNavigationView) {
+        val role = sessionManager.getUserRole()
+        val menu = bottomNav.menu
+        
+        // El rol Cliente no ve Órdenes
+        if (!AccessControl.canViewOrders(role)) {
+            menu.findItem(R.id.nav_ordenes)?.isVisible = false
+        }
+
+        // Solo el Admin ve Usuarios
+        if (role != com.example.mantenimiento.security.Role.ADMIN) {
+            menu.findItem(R.id.nav_usuarios)?.isVisible = false
         }
     }
 
@@ -75,7 +115,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun generarDatosDePruebaConImagenes() {
         val prefs = getSharedPreferences("ClimaTrackDataGen", MODE_PRIVATE)
-        if (prefs.getBoolean("samples_generated", false)) return
+        // Usamos una nueva clave para forzar la generación en la versión 7 de la DB
+        if (prefs.getBoolean("samples_generated_v7", false)) return
 
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         
@@ -111,18 +152,21 @@ class MainActivity : AppCompatActivity() {
             // 3. Guardar en Base de Datos
             val repo = MantenimientoRepository(this)
             val sampleMnt = Mantenimiento(
-                equipoId = 1, // Asumiendo que el equipo con ID 1 existe (creado por DatabaseHelper)
-                fecha = "27/08/2026",
+                equipoId = 1,
+                fecha = "28/08/2026",
                 tipo = "INSPECCIÓN",
-                descripcion = "Mantenimiento de prueba con evidencias generadas",
+                descripcion = "Mantenimiento preventivo de rutina",
+                diagnostico = "Equipo en condiciones óptimas de operación",
                 observaciones = "Generado automáticamente por el sistema",
+                recomendaciones = "Realizar limpieza de filtros en 3 meses",
+                tiempoEmpleado = "1.5",
                 estadoFinal = "OPERATIVO",
                 fotoEvidencia = fotoFile.absolutePath,
                 firmaCliente = firmaFile.absolutePath
             )
             repo.addMantenimiento(sampleMnt)
 
-            prefs.edit().putBoolean("samples_generated", true).apply()
+            prefs.edit().putBoolean("samples_generated_v7", true).apply()
         } catch (e: Exception) {
             e.printStackTrace()
         }
