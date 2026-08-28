@@ -12,7 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // nombre y version de la db
         private const val DATABASE_NAME = "climatrack.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 7
 
         // Nombres de Tablas
         const val TABLE_USUARIOS = "usuarios"
@@ -44,6 +44,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val KEY_ORD_LONGITUD = "longitud"
         const val KEY_ORD_FOTO_RUTA = "foto_ruta"
         const val KEY_ORD_FIRMA_RUTA = "firma_ruta"
+        const val KEY_ORD_TEC_ID = "tecnico_id"
 
         // Columnas Tabla Equipos
         const val KEY_EQP_ID = "id"
@@ -64,6 +65,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val KEY_MNT_ESTADO = "estado_final"
         const val KEY_MNT_FOTO = "foto_evidencia"
         const val KEY_MNT_FIRMA = "firma_cliente"
+        const val KEY_MNT_DIAG = "diagnostico"
+        const val KEY_MNT_RECOM = "recomendaciones"
+        const val KEY_MNT_TIEMPO = "tiempo_empleado"
 
         // Columnas Tabla Repuestos
         const val KEY_REP_ID = "id"
@@ -106,7 +110,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $KEY_ORD_LATITUD TEXT,
                 $KEY_ORD_LONGITUD TEXT,
                 $KEY_ORD_FOTO_RUTA TEXT,
-                $KEY_ORD_FIRMA_RUTA TEXT
+                $KEY_ORD_FIRMA_RUTA TEXT,
+                $KEY_ORD_TEC_ID INTEGER,
+                FOREIGN KEY($KEY_ORD_TEC_ID) REFERENCES $TABLE_USUARIOS($KEY_USR_ID)
             )
         """.trimIndent()
 
@@ -135,6 +141,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $KEY_MNT_ESTADO TEXT,
                 $KEY_MNT_FOTO TEXT,
                 $KEY_MNT_FIRMA TEXT,
+                $KEY_MNT_DIAG TEXT,
+                $KEY_MNT_RECOM TEXT,
+                $KEY_MNT_TIEMPO TEXT,
                 FOREIGN KEY($KEY_MNT_EQP_ID) REFERENCES $TABLE_EQUIPOS($KEY_EQP_ID)
             )
         """.trimIndent()
@@ -169,10 +178,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL(createRepuestosTable)
         db.execSQL(createMNTREPTable)
 
-        // 7. Insertar usuario  (tecnico01 / 123456)
+        // 7. Insertar usuarios de prueba
         db.execSQL("""
-            INSERT INTO $TABLE_USUARIOS ($KEY_USR_USUARIO, $KEY_USR_PASSWORD, $KEY_USR_NOMBRE,$KEY_USR_EMAIL, $KEY_USR_ROL)
-            VALUES ('tecnico01', '123456', 'Técnico 01','tecnico@gmail.com' ,'Técnico')
+            INSERT INTO $TABLE_USUARIOS ($KEY_USR_USUARIO, $KEY_USR_PASSWORD, $KEY_USR_NOMBRE, $KEY_USR_EMAIL, $KEY_USR_ROL)
+            VALUES 
+            ('tecnico01', '123456', 'Técnico 01', 'tecnico@climatrack.com', 'Técnico'),
+            ('admin01', '123456', 'Administrador', 'admin@climatrack.com', 'Administrador'),
+            ('cliente01', '123456', 'Cliente ACME', 'cliente@acme.com', 'Cliente')
         """.trimIndent())
 
         // 8. Insertar órdenes de prueba
