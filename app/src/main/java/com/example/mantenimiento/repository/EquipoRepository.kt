@@ -51,6 +51,31 @@ class EquipoRepository(context: Context) {
     }
 
     /**
+     * Obtiene los equipos filtrados por cliente.
+     */
+    fun getEquiposByCliente(clienteName: String): List<Equipo> {
+        val equipoList = mutableListOf<Equipo>()
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            DatabaseHelper.TABLE_EQUIPOS,
+            null,
+            "${DatabaseHelper.KEY_EQP_CLIENTE}=?",
+            arrayOf(clienteName),
+            null, null, null
+        )
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    equipoList.add(mapCursorToEquipo(it))
+                } while (it.moveToNext())
+            }
+        }
+        db.close()
+        return equipoList
+    }
+
+    /**
      * Busca un equipo específico por su ID.
      */
     fun getEquipoById(id: Int): Equipo? {

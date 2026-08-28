@@ -26,6 +26,9 @@ class MantenimientoRepository(context: Context) {
             put(DatabaseHelper.KEY_MNT_ESTADO, mantenimiento.estadoFinal)
             put(DatabaseHelper.KEY_MNT_FOTO, mantenimiento.fotoEvidencia)
             put(DatabaseHelper.KEY_MNT_FIRMA, mantenimiento.firmaCliente)
+            put(DatabaseHelper.KEY_MNT_DIAG, mantenimiento.diagnostico)
+            put(DatabaseHelper.KEY_MNT_RECOM, mantenimiento.recomendaciones)
+            put(DatabaseHelper.KEY_MNT_TIEMPO, mantenimiento.tiempoEmpleado)
         }
         val id = db.insert(DatabaseHelper.TABLE_MANTENIMIENTOS, null, values)
         db.close()
@@ -47,6 +50,36 @@ class MantenimientoRepository(context: Context) {
         """.trimIndent()
 
         val cursor = db.rawQuery(query, null)
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    val mnt = mapCursorToMantenimiento(it)
+                    mnt.equipoNombre = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.KEY_EQP_NOMBRE))
+                    mntList.add(mnt)
+                } while (it.moveToNext())
+            }
+        }
+        db.close()
+        return mntList
+    }
+
+    /**
+     * Obtiene el historial filtrado por cliente.
+     */
+    fun getMantenimientosByCliente(clienteName: String): List<Mantenimiento> {
+        val mntList = mutableListOf<Mantenimiento>()
+        val db = dbHelper.readableDatabase
+        
+        val query = """
+            SELECT m.*, e.${DatabaseHelper.KEY_EQP_NOMBRE} 
+            FROM ${DatabaseHelper.TABLE_MANTENIMIENTOS} m
+            INNER JOIN ${DatabaseHelper.TABLE_EQUIPOS} e ON m.${DatabaseHelper.KEY_MNT_EQP_ID} = e.${DatabaseHelper.KEY_EQP_ID}
+            WHERE e.${DatabaseHelper.KEY_EQP_CLIENTE} = ?
+            ORDER BY m.${DatabaseHelper.KEY_MNT_FECHA} DESC
+        """.trimIndent()
+
+        val cursor = db.rawQuery(query, arrayOf(clienteName))
 
         cursor.use {
             if (it.moveToFirst()) {
@@ -104,7 +137,10 @@ class MantenimientoRepository(context: Context) {
             observaciones = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_OBS)),
             estadoFinal = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_ESTADO)),
             fotoEvidencia = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_FOTO)),
-            firmaCliente = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_FIRMA))
+            firmaCliente = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_FIRMA)),
+            diagnostico = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_DIAG)),
+            recomendaciones = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_RECOM)),
+            tiempoEmpleado = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_MNT_TIEMPO))
         )
     }
 }
