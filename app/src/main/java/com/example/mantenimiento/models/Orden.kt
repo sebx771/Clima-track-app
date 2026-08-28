@@ -9,5 +9,7 @@ data class Orden(
     val equipo: String,
     val tipoServicio: String,
     val descripcion: String,
-    val estado: String
+    val estado: String,
+    val tecnicoId: Int? = null,
+    var tecnicoNombre: String? = null
 )

@@ -13,5 +13,8 @@ data class Mantenimiento(
     val estadoFinal: String, // Operativo, Fuera de Servicio
     var equipoNombre: String? = null,
     val fotoEvidencia: String? = null,
-    val firmaCliente: String? = null
-)
+    val firmaCliente: String? = null,
+    val diagnostico: String? = null,
+    val recomendaciones: String? = null,
+    val tiempoEmpleado: String? = null
+) : java.io.Serializable
