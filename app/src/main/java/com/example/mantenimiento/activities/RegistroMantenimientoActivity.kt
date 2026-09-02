@@ -5,27 +5,31 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.R
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
+import com.example.mantenimiento.repository.RepuestoRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import java.util.Calendar
-import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RegistroMantenimientoActivity : AppCompatActivity() {
 
     private lateinit var repo: MantenimientoRepository
+    private lateinit var repuestoRepo: RepuestoRepository
+    
+    private var ordenId: Int = -1
+    private var numeroOrden: String = ""
     private var equipoId: Int = -1
     private var equipoNombre: String = ""
     private var pathFoto: String? = null
+    
+    // Lista temporal de repuestos seleccionados (ID a Cantidad)
+    private val repuestosSeleccionados = mutableMapOf<Int, Int>()
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -43,16 +47,24 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_registro_mantenimiento)
 
         repo = MantenimientoRepository(this)
+        repuestoRepo = RepuestoRepository(this)
 
         val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbarRegistroMnt)
         toolbar.setNavigationOnClickListener { finish() }
 
-        // Recibir datos del equipo
+        // Recibir datos de la orden
+        ordenId = intent.getIntExtra("ORDEN_ID", -1)
+        numeroOrden = intent.getStringExtra("ORDEN_NUMERO") ?: "OT-00000"
         equipoId = intent.getIntExtra("EQUIPO_ID", -1)
         equipoNombre = intent.getStringExtra("EQUIPO_NOMBRE") ?: "Desconocido"
-        findViewById<TextView>(R.id.tvEquipoInfo).text = getString(R.string.equipo_label, equipoNombre)
+        
+        findViewById<TextView>(R.id.tvEquipoInfo).text = "Orden: $numeroOrden\nEquipo: $equipoNombre"
 
         setupForm()
+
+        findViewById<MaterialButton>(R.id.btnGestionarRepuestos).setOnClickListener {
+            mostrarDialogoRepuestos()
+        }
 
         findViewById<MaterialButton>(R.id.btnCapturarEvidencia).setOnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
@@ -65,16 +77,17 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
     }
 
     private fun setupForm() {
-        // Configurar selector de fecha
         val etFecha = findViewById<TextInputEditText>(R.id.etFechaMnt)
         etFecha.setOnClickListener { showDatePicker() }
+        
+        // Fecha actual por defecto
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        etFecha.setText(sdf.format(Date()))
 
-        // Configurar dropdown de tipos
         val tipos = arrayOf("PREVENTIVO", "CORRECTIVO", "INSPECCIÓN")
         val adapterTipos = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipos)
         findViewById<AutoCompleteTextView>(R.id.spinnerTipoMnt).setAdapter(adapterTipos)
 
-        // Configurar dropdown de estado final
         val estados = arrayOf("OPERATIVO", "FUERA DE SERVICIO")
         val adapterEstados = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, estados)
         findViewById<AutoCompleteTextView>(R.id.spinnerEstadoFinal).setAdapter(adapterEstados)
@@ -86,47 +99,80 @@ class RegistroMantenimientoActivity : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(this, { _, y, m, d ->
+        DatePickerDialog(this, { _, y, m, d ->
             val fechaFormateada = String.format(Locale.getDefault(), "%02d/%02d/%d", d, m + 1, y)
             findViewById<TextInputEditText>(R.id.etFechaMnt).setText(fechaFormateada)
-        }, year, month, day)
+        }, year, month, day).show()
+    }
 
-        datePickerDialog.show()
+    private fun mostrarDialogoRepuestos() {
+        val repuestosDisponibles = repuestoRepo.getAllRepuestos()
+        val nombres = repuestosDisponibles.map { "${it.nombre} (${it.codigo})" }.toTypedArray()
+        
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle("Seleccionar Repuesto")
+        
+        var selectedIdx = -1
+        builder.setSingleChoiceItems(nombres, -1) { _, which ->
+            selectedIdx = which
+        }
+        
+        builder.setPositiveButton("Agregar") { dialog, _ ->
+            if (selectedIdx != -1) {
+                val repuesto = repuestosDisponibles[selectedIdx]
+                pedirCantidad(repuesto.id!!, repuesto.nombre)
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancelar", null)
+        builder.show()
+    }
+
+    private fun pedirCantidad(repuestoId: Int, nombre: String) {
+        val input = EditText(this)
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        input.hint = "Cantidad"
+        
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Cantidad para $nombre")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val cant = input.text.toString().toIntOrNull() ?: 1
+                repuestosSeleccionados[repuestoId] = (repuestosSeleccionados[repuestoId] ?: 0) + cant
+                Toast.makeText(this, "Agregado: $nombre x$cant", Toast.LENGTH_SHORT).show()
+                findViewById<MaterialButton>(R.id.btnGestionarRepuestos).text = "Repuestos (${repuestosSeleccionados.size})"
+            }
+            .show()
     }
 
     private fun saveMantenimiento() {
         val fecha = findViewById<TextInputEditText>(R.id.etFechaMnt).text.toString()
-        val tipo = findViewById<AutoCompleteTextView>(R.id.spinnerTipoMnt).text.toString()
-        val desc = findViewById<TextInputEditText>(R.id.etDescripcionMnt).text.toString()
         val diag = findViewById<TextInputEditText>(R.id.etDiagnosticoMnt).text.toString()
+        val trabajo = findViewById<TextInputEditText>(R.id.etDescripcionMnt).text.toString()
         val obs = findViewById<TextInputEditText>(R.id.etObservacionesMnt).text.toString()
         val recom = findViewById<TextInputEditText>(R.id.etRecomendacionesMnt).text.toString()
-        val tiempo = findViewById<TextInputEditText>(R.id.etTiempoMnt).text.toString()
-        val estado = findViewById<AutoCompleteTextView>(R.id.spinnerEstadoFinal).text.toString()
 
-        if (fecha.isEmpty() || tipo.isEmpty() || desc.isEmpty()) {
-            Toast.makeText(this, getString(R.string.msg_campos_obligatorios), Toast.LENGTH_SHORT).show()
+        if (fecha.isEmpty() || trabajo.isEmpty()) {
+            Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
             return
         }
 
         val mnt = Mantenimiento(
-            equipoId = equipoId,
-            equipoNombre = equipoNombre,
+            ordenId = ordenId,
             fecha = fecha,
-            tipo = tipo,
-            descripcion = desc,
             diagnostico = diag,
+            trabajoRealizado = trabajo,
             observaciones = obs,
             recomendaciones = recom,
-            tiempoEmpleado = tiempo,
-            estadoFinal = estado,
-            fotoEvidencia = pathFoto,
-            firmaCliente = null // Se capturará en el siguiente paso
+            equipoNombre = equipoNombre,
+            numeroOrden = numeroOrden
         )
 
-        // En lugar de guardar, vamos al RESUMEN
+        // Pasar al resumen
         val intent = Intent(this, ResumenServicioActivity::class.java)
         intent.putExtra("MANTENIMIENTO", mnt)
+        intent.putExtra("FOTO_PATH", pathFoto)
+        intent.putExtra("REPUESTOS", HashMap(repuestosSeleccionados))
         startActivity(intent)
         finish()
     }

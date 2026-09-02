@@ -60,6 +60,20 @@ class UsuarioRepository(context: Context) {
         return lista
     }
 
+    fun getPersonalInterno(): List<Usuario> {
+        val lista = mutableListOf<Usuario>()
+        val db = dbHelper.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM ${DatabaseHelper.TABLE_USUARIOS} WHERE ${DatabaseHelper.KEY_USR_ROL} != ?", arrayOf("Cliente"))
+
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(mapCursorToUsuario(cursor))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return lista
+    }
+
     private fun mapCursorToUsuario(cursor: Cursor): Usuario {
         return Usuario(
             id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_USR_ID)),

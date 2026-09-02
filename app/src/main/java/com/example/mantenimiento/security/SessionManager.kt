@@ -30,6 +30,8 @@ class SessionManager(context: Context) {
 
     fun getUserName(): String = prefs.getString("nombre", "Usuario") ?: "Usuario"
     
+    fun getUserId(): Int = prefs.getInt("userId", -1)
+    
     fun getEmpresaCliente(): String? = prefs.getString("empresaCliente", null)
 
     fun logout() {

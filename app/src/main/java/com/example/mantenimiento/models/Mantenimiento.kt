@@ -1,20 +1,22 @@
 package com.example.mantenimiento.models
 
+import java.io.Serializable
+
 /**
- * Representa el registro de una intervención técnica realizada a un equipo.
+ * Representa el registro de una intervención técnica realizada a un equipo vinculada a una orden.
  */
 data class Mantenimiento(
     val id: Int? = null,
-    val equipoId: Int,
+    val ordenId: Int,
     val fecha: String,
-    val tipo: String, // Preventivo, Correctivo, Inspección
-    val descripcion: String,
+    val diagnostico: String,
+    val trabajoRealizado: String,
     val observaciones: String,
-    val estadoFinal: String, // Operativo, Fuera de Servicio
+    val recomendaciones: String,
+    
+    // Auxiliares para UI y trazabilidad
     var equipoNombre: String? = null,
-    val fotoEvidencia: String? = null,
-    val firmaCliente: String? = null,
-    val diagnostico: String? = null,
-    val recomendaciones: String? = null,
-    val tiempoEmpleado: String? = null
-) : java.io.Serializable
+    var numeroOrden: String? = null,
+    var fotoEvidencia: String? = null,
+    var firmaCliente: String? = null
+) : Serializable

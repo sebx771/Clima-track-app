@@ -34,6 +34,7 @@ class EquiposFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         repo = EquipoRepository(requireContext())
         setupRecyclerView(view)
+        setupToolbar(view)
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddEquipo)
         if (AccessControl.canCreateEquipment(sessionManager.getUserRole())) {
@@ -46,6 +47,31 @@ class EquiposFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun setupToolbar(view: View) {
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbarEquipos)
+        toolbar.inflateMenu(R.menu.menu_lista_equipos)
+        
+        val searchItem = toolbar.menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+        
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { performSearch(it) }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { performSearch(it) }
+                return true
+            }
+        })
+    }
+
+    private fun performSearch(query: String) {
+        val list = repo.searchEquipos(query)
+        adapter.updateData(list)
     }
 
     private fun setupRecyclerView(view: View) {
@@ -81,7 +107,7 @@ class EquiposFragment : Fragment() {
                 "Registrar Mantenimiento" -> {
                     val intent = Intent(requireContext(), RegistroMantenimientoActivity::class.java)
                     intent.putExtra("EQUIPO_ID", equipo.id)
-                    intent.putExtra("EQUIPO_NOMBRE", equipo.nombre)
+                    intent.putExtra("EQUIPO_NOMBRE", equipo.modelo)
                     startActivity(intent)
                 }
                 "Editar" -> {
@@ -99,7 +125,7 @@ class EquiposFragment : Fragment() {
     private fun confirmDelete(equipo: Equipo) {
         AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Equipo")
-            .setMessage("¿Deseas eliminar ${equipo.nombre}?")
+            .setMessage("¿Deseas eliminar ${equipo.modelo}?")
             .setPositiveButton("Eliminar") { _, _ ->
                 val result = repo.deleteEquipo(equipo.id ?: 0)
                 if (result > 0) {
@@ -114,8 +140,8 @@ class EquiposFragment : Fragment() {
     private fun loadEquipos() {
         val role = sessionManager.getUserRole()
         val lista = if (role == Role.CLIENTE) {
-            val empresa = sessionManager.getEmpresaCliente() ?: "ACME S.A.S"
-            repo.getEquiposByCliente(empresa)
+            val userId = sessionManager.getUserId()
+            repo.getEquiposByCliente(userId)
         } else {
             repo.getAllEquipos()
         }

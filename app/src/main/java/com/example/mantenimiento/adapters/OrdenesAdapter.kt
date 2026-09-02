@@ -24,8 +24,8 @@ class OrdenesAdapter(
         with(holder.binding) {
             tvNumeroOrden.text = orden.numero
             tvEstado.text = orden.estado
-            tvCliente.text = orden.cliente
-            tvEquipo.text = "Equipo: ${orden.equipo}"
+            tvCliente.text = orden.clienteNombre
+            tvEquipo.text = "Equipo: ${orden.equipoNombre}"
             tvTipoServicio.text = orden.tipoServicio
             tvFecha.text = orden.fecha
 

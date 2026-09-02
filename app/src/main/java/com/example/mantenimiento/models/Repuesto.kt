@@ -7,5 +7,6 @@ data class Repuesto(
     val id: Int? = null,
     val nombre: String,
     val codigo: String,
+    val unidad: String? = null,
     val cantidadDisponible: Int,
 )

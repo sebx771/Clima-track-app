@@ -30,7 +30,7 @@ class EquipoAdapter(
 
     override fun onBindViewHolder(holder: EquipoViewHolder, position: Int) {
         val equipo = equipos[position]
-        holder.tvNombre.text = equipo.nombre
+        holder.tvNombre.text = "${equipo.tipo} [${equipo.codigo}]"
         holder.tvMarcaModelo.text = "${equipo.marca} - ${equipo.modelo}"
         holder.tvUbicacion.text = equipo.ubicacion
         

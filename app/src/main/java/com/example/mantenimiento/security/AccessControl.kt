@@ -1,10 +1,10 @@
 package com.example.mantenimiento.security
 
-import android.content.Context
-
 object AccessControl {
 
     fun canManageInventory(role: Role): Boolean = role == Role.ADMIN
+
+    fun canManageClients(role: Role): Boolean = role == Role.ADMIN
 
     fun canCreateEquipment(role: Role): Boolean = role == Role.ADMIN
 
