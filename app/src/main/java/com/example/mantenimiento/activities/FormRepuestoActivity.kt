@@ -50,6 +50,7 @@ class FormRepuestoActivity : AppCompatActivity() {
         repuesto?.let {
             findViewById<TextInputEditText>(R.id.etNombreRepuesto).setText(it.nombre)
             findViewById<TextInputEditText>(R.id.etCodigoRepuesto).setText(it.codigo)
+            findViewById<TextInputEditText>(R.id.etUnidadRepuesto).setText(it.unidad)
             findViewById<TextInputEditText>(R.id.etStockRepuesto).setText(it.cantidadDisponible.toString())
         }
     }
@@ -57,6 +58,7 @@ class FormRepuestoActivity : AppCompatActivity() {
     private fun saveRepuesto() {
         val nombre = findViewById<TextInputEditText>(R.id.etNombreRepuesto).text.toString()
         val codigo = findViewById<TextInputEditText>(R.id.etCodigoRepuesto).text.toString()
+        val unidad = findViewById<TextInputEditText>(R.id.etUnidadRepuesto).text.toString()
         val stockStr = findViewById<TextInputEditText>(R.id.etStockRepuesto).text.toString()
 
         if (nombre.isEmpty() || stockStr.isEmpty()) {
@@ -69,6 +71,7 @@ class FormRepuestoActivity : AppCompatActivity() {
             id = if (repuestoId != -1) repuestoId else null,
             nombre = nombre,
             codigo = codigo,
+            unidad = unidad,
             cantidadDisponible = stock,
         )
 

@@ -32,7 +32,7 @@ class FormUsuarioActivity : AppCompatActivity() {
     }
 
     private fun setupForm() {
-        val roles = arrayOf("Administrador", "Técnico", "Cliente")
+        val roles = arrayOf("Administrador", "Técnico")
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roles)
         findViewById<AutoCompleteTextView>(R.id.spinnerRolUser).setAdapter(adapter)
     }

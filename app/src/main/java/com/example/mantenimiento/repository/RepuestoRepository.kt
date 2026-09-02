@@ -39,6 +39,7 @@ class RepuestoRepository(context: Context) {
         val values = ContentValues().apply {
             put(DatabaseHelper.KEY_REP_NOMBRE, repuesto.nombre)
             put(DatabaseHelper.KEY_REP_CODIGO, repuesto.codigo)
+            put(DatabaseHelper.KEY_REP_UNIDAD, repuesto.unidad)
             put(DatabaseHelper.KEY_REP_STOCK, repuesto.cantidadDisponible)
         }
         val id = db.insert(DatabaseHelper.TABLE_REPUESTOS, null, values)
@@ -77,6 +78,7 @@ class RepuestoRepository(context: Context) {
         val values = ContentValues().apply {
             put(DatabaseHelper.KEY_REP_NOMBRE, repuesto.nombre)
             put(DatabaseHelper.KEY_REP_CODIGO, repuesto.codigo)
+            put(DatabaseHelper.KEY_REP_UNIDAD, repuesto.unidad)
             put(DatabaseHelper.KEY_REP_STOCK, repuesto.cantidadDisponible)
         }
         val result = db.update(
@@ -129,6 +131,7 @@ class RepuestoRepository(context: Context) {
             id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_REP_ID)),
             nombre = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_REP_NOMBRE)),
             codigo = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_REP_CODIGO)),
+            unidad = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_REP_UNIDAD)),
             cantidadDisponible = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_REP_STOCK)),
         )
     }
