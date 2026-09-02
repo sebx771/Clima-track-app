@@ -9,16 +9,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="121dp"
         android:orientation="horizontal"
         android:padding="16dp">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:src="@drawable/app_logo"
-            app:tint="@color/color_primary" />
+            android:id="@+id/ivFotoEquipo"
+            android:layout_width="83dp"
+            android:layout_height="68dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_equipo" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#000000"> <!-- Fondo negro absoluto -->
+    android:background="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Bienvenido"
-            android:textColor="#FFFFFF"
+            android:textColor="#1A1A1A"
             android:textSize="32sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Inicia sesión para continuar"
-            android:textColor="#A0A0A0"
+            android:textColor="#757575"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,8 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:hint="Usuario o correo"
-            android:textColorHint="#A0A0A0"
-            app:boxBackgroundColor="#15FFFFFF"
+            android:textColorHint="#757575"
+            app:boxBackgroundColor="#FFFFFF"
             app:boxStrokeColor="#3877F1"
             app:boxStrokeWidth="1.5dp"
             app:boxStrokeWidthFocused="2dp"
@@ -80,8 +80,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="#FFFFFF"
+                android:textColor="#1A1A1A"
                 android:maxLines="1" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Contraseña -->
@@ -92,8 +93,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Contraseña"
-            android:textColorHint="#A0A0A0"
-            app:boxBackgroundColor="#15FFFFFF"
+            android:textColorHint="#757575"
+            app:boxBackgroundColor="#FFFFFF"
             app:boxStrokeColor="#3877F1"
             app:boxStrokeWidth="1.5dp"
             app:boxStrokeWidthFocused="2dp"
@@ -115,8 +116,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textColor="#FFFFFF"
+                android:textColor="#1A1A1A"
                 android:maxLines="1" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Recordar Usuario -->
@@ -126,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Recordar usuario"
-            android:textColor="#A0A0A0"
+            android:textColor="#555555"
             android:buttonTint="#3877F1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilPassword" />
@@ -155,7 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="ClimaTrack © 2026"
-            android:textColor="#555555"
+            android:textColor="#757575"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
