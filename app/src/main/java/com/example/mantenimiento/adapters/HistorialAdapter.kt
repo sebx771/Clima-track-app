@@ -30,8 +30,8 @@ class HistorialAdapter(
         val mnt = mantenimientos[position]
         holder.tvEquipo.text = mnt.equipoNombre ?: "Equipo Desconocido"
         holder.tvFecha.text = mnt.fecha
-        holder.tvTipo.text = mnt.tipo
-        holder.tvDesc.text = mnt.descripcion
+        holder.tvTipo.text = "Orden: ${mnt.numeroOrden}"
+        holder.tvDesc.text = mnt.trabajoRealizado
         
         holder.itemView.setOnClickListener { onItemClick(mnt) }
     }

@@ -40,17 +40,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="Equipo: Cargando..."
+                android:text="Cargando información..."
                 android:textColor="@color/color_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Selector de Fecha -->
+            <!-- Datos de Fecha y Tipo -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="@string/hint_fecha_mnt"
+                android:hint="Fecha de Intervención"
                 app:startIconDrawable="@android:drawable/ic_menu_today">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -58,75 +58,65 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:clickable="true"
-                    android:focusableInTouchMode="false" />
+                    android:clickable="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Tipo de Mantenimiento -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="@string/hint_tipo_mnt"
+                android:hint="Tipo de Servicio"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
                     android:id="@+id/spinnerTipoMnt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    tools:ignore="LabelFor" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Descripción -->
+            <!-- Hallazgos Técnicos -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="@string/hint_descripcion_mnt">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescripcionMnt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
-                    android:minLines="3" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Diagnóstico -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Diagnóstico Técnico">
+                android:hint="Diagnóstico Inicial">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDiagnosticoMnt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
-                    android:minLines="2" />
+                    android:minLines="2"
+                    android:gravity="top" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Observaciones -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="@string/hint_observaciones_mnt">
+                android:hint="Trabajo Realizado">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDescripcionMnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:gravity="top" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Observaciones">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etObservacionesMnt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
                     android:minLines="2" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Recomendaciones -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,82 +127,70 @@
                     android:id="@+id/etRecomendacionesMnt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
                     android:minLines="2" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Tiempo Empleado -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Repuestos -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Insumos y Repuestos"
+                android:textColor="@color/color_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGestionarRepuestos"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Agregar Repuesto Utilizado"
+                android:layout_marginBottom="24dp"
+                app:icon="@android:drawable/ic_input_add" />
+
+            <!-- Evidencia Fotográfica -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Evidencia Fotográfica"
+                android:textColor="@color/color_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCapturarEvidencia"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Tomar Foto del Equipo"
                 android:layout_marginBottom="16dp"
-                android:hint="Tiempo Empleado (Horas)">
+                app:backgroundTint="@color/color_primary"
+                app:icon="@android:drawable/ic_menu_camera" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etTiempoMnt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/ivPreviewFoto"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="20dp"
+                android:background="#EEEEEE"
+                android:contentDescription="Vista previa de foto" />
 
-            <!-- Estado Final -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:hint="@string/hint_estado_final"
+                android:hint="Estado Final del Equipo"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
                     android:id="@+id/spinnerEstadoFinal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    tools:ignore="LabelFor" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/label_evidencias"
-                android:textColor="@color/color_primary"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCapturarEvidencia"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btn_capturar_evidencia"
-                    app:icon="@android:drawable/ic_menu_camera" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/ivPreviewFoto"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:visibility="gone"
-                    android:scaleType="centerCrop"
-                    android:background="#EEEEEE"
-                    android:contentDescription="Vista previa de foto" />
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -222,7 +200,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="16dp"
-        android:text="@string/btn_finalizar_mnt"
+        android:text="CONTINUAR A RESUMEN"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="@color/color_secondary"

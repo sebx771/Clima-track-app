@@ -31,7 +31,7 @@ class RepuestoAdapter(
         val repuesto = repuestos[position]
         holder.tvNombre.text = repuesto.nombre
         holder.tvCodigo.text = holder.itemView.context.getString(R.string.codigo_label, repuesto.codigo)
-        holder.tvStock.text = holder.itemView.context.getString(R.string.stock_label, repuesto.cantidadDisponible)
+        holder.tvStock.text = "${repuesto.cantidadDisponible} ${repuesto.unidad ?: ""}"
         
         holder.btnOpciones.setOnClickListener { onOptionsClick(repuesto, it) }
     }

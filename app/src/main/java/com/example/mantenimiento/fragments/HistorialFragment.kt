@@ -15,7 +15,6 @@ import com.example.mantenimiento.R
 import com.example.mantenimiento.adapters.HistorialAdapter
 import com.example.mantenimiento.models.Mantenimiento
 import com.example.mantenimiento.repository.MantenimientoRepository
-import com.example.mantenimiento.repository.OrdenRepository
 import com.example.mantenimiento.security.Role
 import com.example.mantenimiento.security.SessionManager
 import java.io.File
@@ -23,7 +22,6 @@ import java.io.File
 class HistorialFragment : Fragment() {
 
     private lateinit var repoMnt: MantenimientoRepository
-    private lateinit var repoOrdenes: OrdenRepository
     private lateinit var sessionManager: SessionManager
     private lateinit var adapter: HistorialAdapter
 
@@ -32,7 +30,6 @@ class HistorialFragment : Fragment() {
         
         sessionManager = SessionManager(requireContext())
         repoMnt = MantenimientoRepository(requireContext())
-        repoOrdenes = OrdenRepository(requireContext())
         setupRecyclerView(view)
 
         return view
@@ -51,75 +48,54 @@ class HistorialFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_detalle_mantenimiento, null)
         
         dialogView.findViewById<TextView>(R.id.tvDetalleEquipo).text = mnt.equipoNombre
-        dialogView.findViewById<TextView>(R.id.tvDetalleFechaTipo).text = getString(R.string.fecha_tipo_format, mnt.fecha, mnt.tipo)
-        dialogView.findViewById<TextView>(R.id.tvDetalleDesc).text = mnt.descripcion
-        dialogView.findViewById<TextView>(R.id.tvDetalleObs).text = mnt.observaciones.ifEmpty { getString(R.string.no_observaciones) }
-        dialogView.findViewById<TextView>(R.id.tvDetalleEstado).text = mnt.estadoFinal
+        dialogView.findViewById<TextView>(R.id.tvDetalleFechaTipo).text = "Fecha: ${mnt.fecha}"
+        dialogView.findViewById<TextView>(R.id.tvDetalleDesc).text = mnt.trabajoRealizado
+        dialogView.findViewById<TextView>(R.id.tvDetalleObs).text = mnt.observaciones.ifEmpty { "Sin observaciones" }
+        dialogView.findViewById<TextView>(R.id.tvDetalleEstado).text = "Finalizado"
 
-        // Cargar Foto
+        // Cargar Foto de Evidencia
         if (!mnt.fotoEvidencia.isNullOrEmpty()) {
-            val file = File(mnt.fotoEvidencia)
+            val file = File(mnt.fotoEvidencia!!)
             if (file.exists()) {
-                dialogView.findViewById<TextView>(R.id.tvEvidenciasLabel).visibility = View.VISIBLE
                 val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetalleFoto)
                 ivFoto.visibility = View.VISIBLE
                 ivFoto.setImageBitmap(BitmapFactory.decodeFile(mnt.fotoEvidencia))
+                dialogView.findViewById<TextView>(R.id.tvEvidenciasLabel).visibility = View.VISIBLE
             }
         }
 
-        // Cargar Firma
+        // Cargar Firma del Cliente
         if (!mnt.firmaCliente.isNullOrEmpty()) {
-            val file = File(mnt.firmaCliente)
+            val file = File(mnt.firmaCliente!!)
             if (file.exists()) {
-                dialogView.findViewById<TextView>(R.id.tvFirmaLabel).visibility = View.VISIBLE
                 val ivFirma = dialogView.findViewById<ImageView>(R.id.ivDetalleFirma)
                 ivFirma.visibility = View.VISIBLE
                 ivFirma.setImageBitmap(BitmapFactory.decodeFile(mnt.firmaCliente))
+                dialogView.findViewById<TextView>(R.id.tvFirmaLabel).visibility = View.VISIBLE
             }
         }
 
         AlertDialog.Builder(requireContext())
             .setView(dialogView)
-            .setPositiveButton(R.string.btn_cerrar, null)
+            .setPositiveButton("Cerrar", null)
             .show()
     }
 
     override fun onResume() {
         super.onResume()
-        cargarHistorialCombinado()
+        cargarHistorial()
     }
 
-    private fun cargarHistorialCombinado() {
+    private fun cargarHistorial() {
         val role = sessionManager.getUserRole()
-        val empresa = sessionManager.getEmpresaCliente() ?: "ACME S.A.S"
+        val userId = sessionManager.getUserId()
 
-        val listaMnt = if (role == Role.CLIENTE) {
-            repoMnt.getMantenimientosByCliente(empresa)
+        val lista = if (role == Role.CLIENTE) {
+            repoMnt.getMantenimientosByCliente(userId)
         } else {
             repoMnt.getAllMantenimientos()
         }
 
-        val listaOrdenesFinalizadas = if (role == Role.CLIENTE) {
-            repoOrdenes.obtenerOrdenesFinalizadasPorCliente(empresa)
-        } else {
-            repoOrdenes.obtenerOrdenesFinalizadas()
-        }
-
-        // Convertir Órdenes a formato Mantenimiento para la vista
-        val listaConvertida = listaOrdenesFinalizadas.map { orden ->
-            Mantenimiento(
-                id = orden.id,
-                equipoId = 0,
-                fecha = orden.fecha,
-                tipo = orden.tipoServicio,
-                descripcion = orden.descripcion,
-                observaciones = "Orden Finalizada: ${orden.numero}",
-                estadoFinal = orden.estado,
-                equipoNombre = orden.equipo
-            )
-        }
-
-        val total = (listaMnt + listaConvertida).sortedByDescending { it.fecha }
-        adapter.updateData(total)
+        adapter.updateData(lista)
     }
 }

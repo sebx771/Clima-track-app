@@ -62,7 +62,7 @@ class UsuariosFragment : Fragment() {
     }
 
     private fun loadUsuarios() {
-        val lista = repo.getAllUsuarios()
+        val lista = repo.getPersonalInterno()
         adapter.updateData(lista)
     }
 

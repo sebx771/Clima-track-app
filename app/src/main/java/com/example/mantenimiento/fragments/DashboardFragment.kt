@@ -92,7 +92,7 @@ class DashboardFragment : Fragment() {
             // El cliente ve el resumen de sus órdenes finalizadas vs pendientes
             val empresa = sessionManager.getEmpresaCliente() ?: "ACME S.A.S"
             val todas = ordenRepository.obtenerOrdenes()
-            val deCliente = todas.filter { it.cliente == empresa }
+            val deCliente = todas.filter { it.clienteNombre == empresa }
             
             tvCountPendientes.text = deCliente.count { it.estado == "PENDIENTE" }.toString()
             tvCountEnProceso.text = deCliente.count { it.estado == "EN PROCESO" }.toString()

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mantenimiento.R
 import com.example.mantenimiento.activities.FormOrdenActivity
 import com.example.mantenimiento.activities.AsignarOrdenActivity
+import com.example.mantenimiento.activities.RegistroMantenimientoActivity
 import com.example.mantenimiento.adapters.OrdenesAdapter
 import com.example.mantenimiento.repository.OrdenRepository
 import com.example.mantenimiento.security.AccessControl
@@ -33,7 +34,7 @@ class OrdenesFragment : Fragment() {
     private lateinit var spinnerTipo: Spinner
     private lateinit var fabAddOrden: FloatingActionButton
 
-    private val opcionesEstado = arrayOf("TODOS", "PENDIENTE", "EN PROCESO", "CANCELADA") // Quitamos FINALIZADA
+    private val opcionesEstado = arrayOf("TODOS", "PENDIENTE", "EN PROCESO", "FINALIZADA", "CANCELADA")
     private val opcionesTipo = arrayOf("TODOS", "PREVENTIVO", "CORRECTIVO", "INSTALACION", "DIAGNOSTICO")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,16 +70,36 @@ class OrdenesFragment : Fragment() {
     private fun setupRecyclerView() {
         val role = sessionManager.getUserRole()
         ordenesAdapter = OrdenesAdapter(emptyList()) { orden ->
-            if (role == Role.ADMIN) {
-                // El Admin puede asignar la orden
-                val intent = Intent(requireContext(), AsignarOrdenActivity::class.java)
-                intent.putExtra("ORDEN_ID", orden.id)
-                intent.putExtra("ORDEN_NUMERO", orden.numero)
-                intent.putExtra("ORDEN_CLIENTE", orden.cliente)
-                startActivity(intent)
-            } else {
-                Toast.makeText(requireContext(), "Orden: ${orden.numero}", Toast.LENGTH_SHORT).show()
-                // Futuro: El técnico abre el Registro de Mantenimiento
+            when {
+                role == Role.ADMIN -> {
+                    if (orden.estado == "FINALIZADA") {
+                        Toast.makeText(requireContext(), "La orden ${orden.numero} ya está finalizada.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val intent = Intent(requireContext(), AsignarOrdenActivity::class.java)
+                        intent.putExtra("ORDEN_ID", orden.id)
+                        intent.putExtra("ORDEN_NUMERO", orden.numero)
+                        intent.putExtra("ORDEN_CLIENTE", orden.clienteNombre ?: "Cliente no especificado")
+                        startActivity(intent)
+                    }
+                }
+                role == Role.TECNICO -> {
+                    if (orden.estado == "FINALIZADA") {
+                        Toast.makeText(requireContext(), "Orden finalizada: ${orden.numero}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Actualizar estado a EN PROCESO al abrirla
+                        ordenRepository.actualizarEstadoOrden(orden.id!!, "EN PROCESO")
+                        
+                        val intent = Intent(requireContext(), RegistroMantenimientoActivity::class.java)
+                        intent.putExtra("ORDEN_ID", orden.id)
+                        intent.putExtra("ORDEN_NUMERO", orden.numero)
+                        intent.putExtra("EQUIPO_ID", orden.equipoId)
+                        intent.putExtra("EQUIPO_NOMBRE", orden.equipoNombre)
+                        startActivity(intent)
+                    }
+                }
+                else -> {
+                    Toast.makeText(requireContext(), "Orden: ${orden.numero}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         rvOrdenes.layoutManager = LinearLayoutManager(requireContext())
@@ -111,12 +132,11 @@ class OrdenesFragment : Fragment() {
 
         val lista = when {
             role == Role.TECNICO -> {
-                // El técnico solo ve sus órdenes asignadas
                 val userId = requireContext().getSharedPreferences("ClimaTrackPrefs", Context.MODE_PRIVATE).getInt("userId", -1)
                 ordenRepository.obtenerOrdenesAsignadas(userId)
             }
             estado == "TODOS" -> {
-                ordenRepository.obtenerOrdenesActivas()
+                ordenRepository.obtenerOrdenes()
             }
             else -> {
                 ordenRepository.obtenerOrdenesFiltradas(estado, tipo)
