@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -59,8 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:src="@android:drawable/ic_menu_more"
                 android:contentDescription="@string/app_name"
+                android:src="@android:drawable/ic_menu_more"
                 app:tint="@color/text_secondary" />
 
         </LinearLayout>
