@@ -1,15 +1,20 @@
 package com.example.mantenimiento.models
 
+import java.io.Serializable
+
 data class Orden(
-    val id: Int,
+    val id: Int? = null,
     val numero: String,
     val fecha: String,
-    val cliente: String,
-    val direccion: String,
-    val equipo: String,
+    val clienteId: Int,
+    val equipoId: Int,
+    val tecnicoId: Int?,
     val tipoServicio: String,
     val descripcion: String,
     val estado: String,
-    val tecnicoId: Int? = null,
+    
+    // Auxiliares para UI
+    var clienteNombre: String? = null,
+    var equipoNombre: String? = null,
     var tecnicoNombre: String? = null
-)
+) : Serializable
