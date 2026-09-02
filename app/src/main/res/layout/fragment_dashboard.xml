@@ -46,6 +46,17 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/ivMenuOpciones"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_menu_24"
+            app:tint="#FFFFFF" />
+
     </LinearLayout>
 
 
