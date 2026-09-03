@@ -42,8 +42,15 @@ class DashboardFragment : Fragment() {
         cargarContadores()
 
         // Navegación entre pestañas
+        // Navegación entre pestañas
         val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val role = sessionManager.getUserRole()
+
+        // =========================================================
+        // NUEVO: Ocultar ítems SOLO en la barra de navegación inferior
+        // =========================================================
+        bottomNav.menu.findItem(R.id.nav_usuarios)?.isVisible = false
+        bottomNav.menu.findItem(R.id.nav_clientes)?.isVisible = false
 
         // =========================================================
         // NUEVO CÓDIGO: Configuración del menú Popup superior
