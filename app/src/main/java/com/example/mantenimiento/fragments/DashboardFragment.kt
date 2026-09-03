@@ -96,6 +96,10 @@ class DashboardFragment : Fragment() {
                         bottomNav.selectedItemId = R.id.nav_usuarios
                         true
                     }
+                    R.id.nav_clientes -> {
+                        bottomNav.selectedItemId = R.id.nav_clientes
+                        true
+                    }
                     else -> false
                 }
             }
