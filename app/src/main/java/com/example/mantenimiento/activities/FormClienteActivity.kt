@@ -8,6 +8,7 @@ import com.example.mantenimiento.models.Cliente
 import com.example.mantenimiento.repository.ClienteRepository
 import com.example.mantenimiento.security.AccessControl
 import com.example.mantenimiento.security.SessionManager
+import com.example.mantenimiento.utils.ValidateEmail
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
@@ -63,6 +64,11 @@ class FormClienteActivity : AppCompatActivity() {
 
         if (nombre.isEmpty() || tel.isEmpty() || dir.isEmpty()) {
             Toast.makeText(this, "Nombre, Teléfono y Dirección son obligatorios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (email.isNotEmpty() && !ValidateEmail.isValid(email)) {
+            Toast.makeText(this, "Correo electrónico no válido", Toast.LENGTH_SHORT).show()
             return
         }
 

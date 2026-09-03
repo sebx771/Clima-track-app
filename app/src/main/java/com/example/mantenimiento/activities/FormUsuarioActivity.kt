@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mantenimiento.R
 import com.example.mantenimiento.models.Usuario
 import com.example.mantenimiento.repository.UsuarioRepository
+import com.example.mantenimiento.utils.ValidateEmail
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
@@ -46,6 +47,11 @@ class FormUsuarioActivity : AppCompatActivity() {
 
         if (nombre.isEmpty() || userLogin.isEmpty() || email.isEmpty() || pass.isEmpty() || rol.isEmpty()) {
             Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (!ValidateEmail.isValid(email)) {
+            Toast.makeText(this, "Correo electrónico no válido", Toast.LENGTH_SHORT).show()
             return
         }
 

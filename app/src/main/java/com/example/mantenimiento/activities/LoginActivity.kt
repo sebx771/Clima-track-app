@@ -9,6 +9,7 @@ import com.example.mantenimiento.MainActivity
 import com.example.mantenimiento.databinding.ActivityLoginBinding
 import com.example.mantenimiento.repository.UsuarioRepository
 import com.example.mantenimiento.security.SessionManager
+import com.example.mantenimiento.utils.ValidateEmail
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,6 +39,11 @@ class LoginActivity : AppCompatActivity() {
 
             if (inputUserOrEmail.isEmpty()) {
                 binding.etUsuario.error = "Ingrese su usuario o correo"
+                return@setOnClickListener
+            }
+
+            if (inputUserOrEmail.contains("@") && !ValidateEmail.isValid(inputUserOrEmail)) {
+                binding.etUsuario.error = "Formato de correo no válido"
                 return@setOnClickListener
             }
 
