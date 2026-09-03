@@ -138,9 +138,12 @@ class DashboardFragment : Fragment() {
             tvCountEnProceso.text = ordenRepository.obtenerOrdenesAsignadas(userId).count { it.estado == "EN PROCESO" }.toString()
             tvCountFinalizadas.text = ordenRepository.obtenerOrdenesAsignadas(userId).count { it.estado == "FINALIZADA" }.toString()
         } else if (role == com.example.mantenimiento.security.Role.CLIENTE) {
+            // Como sesión maneja la empresa o ID, filtramos las órdenes del cliente actual
             val empresa = sessionManager.getEmpresaCliente() ?: "ACME S.A.S"
             val todas = ordenRepository.obtenerOrdenes()
-            val deCliente = todas.filter { it.cliente == empresa }
+
+            // Filtramos usando el campo auxiliar clienteNombre o el ID según corresponda
+            val deCliente = todas.filter { it.clienteNombre == empresa }
 
             tvCountPendientes.text = deCliente.count { it.estado == "PENDIENTE" }.toString()
             tvCountEnProceso.text = deCliente.count { it.estado == "EN PROCESO" }.toString()

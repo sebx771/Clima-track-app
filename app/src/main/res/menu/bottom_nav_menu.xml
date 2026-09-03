@@ -20,4 +20,8 @@
         android:id="@+id/nav_usuarios"
         android:icon="@drawable/ic_menu_user"
         android:title="Usuarios" />
+    <item
+        android:id="@+id/nav_clientes"
+        android:icon="@drawable/ic_menu_user"
+        android:title="Cliente" />
 </menu>
