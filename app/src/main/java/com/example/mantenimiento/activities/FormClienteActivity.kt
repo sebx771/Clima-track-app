@@ -21,7 +21,7 @@ class FormClienteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         sessionManager = SessionManager(this)
-        if (!AccessControl.canManageInventory(sessionManager.getUserRole())) {
+        if (!AccessControl.canManageClients(sessionManager.getUserRole())) {
             Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_LONG).show()
             finish()
             return

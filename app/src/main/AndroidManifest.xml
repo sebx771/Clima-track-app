@@ -78,6 +78,11 @@
             android:label="Asignar Orden" />
 
         <activity
+            android:name=".activities.FormClienteActivity"
+            android:exported="false"
+            android:label="Registro de Cliente" />
+
+        <activity
             android:name=".activities.ResumenServicioActivity"
             android:exported="false"
             android:label="Resumen del Servicio" />
