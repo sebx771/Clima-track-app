@@ -87,6 +87,19 @@
             android:exported="false"
             android:label="Resumen del Servicio" />
 
+        <activity
+            android:name=".activities.GeolocalizacionActivity"
+            android:exported="false"
+            android:label="Ubicación del Servicio" />
+
+        <!--
+             TODO: Reemplaza "TU_API_KEY_AQUÍ" con una clave de API de Google Maps válida.
+             Puedes obtener una en: https://console.cloud.google.com/google/maps-apis/credentials
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="TU_API_KEY_AQUÍ" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mantenimiento.fileprovider"

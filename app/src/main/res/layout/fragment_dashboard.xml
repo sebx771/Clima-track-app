@@ -422,6 +422,35 @@
 
             </LinearLayout>
 
+            <!-- FILA 3 (GEOLOCALIZACION) -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVerMapa"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:text="Geolocalización del Servicio"
+                    android:textAllCaps="false"
+                    android:textColor="#263248"
+                    android:textSize="14sp"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="16dp"
+                    app:elevation="1dp"
+                    app:icon="@android:drawable/ic_dialog_map"
+                    app:iconGravity="top"
+                    app:iconPadding="8dp"
+                    app:iconSize="32dp"
+                    app:iconTint="#FF9800"
+                    app:strokeColor="#E7EBF2"
+                    app:strokeWidth="1dp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>
