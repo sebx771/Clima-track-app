@@ -263,6 +263,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             INSERT INTO $TABLE_ORDENES (numero, fecha, cliente_id, equipo_id, tecnico_id, tipo_servicio, descripcion, estado)
             VALUES ('OT-00025', '18/08/2026', 1, 1, 1, 'PREVENTIVO', 'Mantenimiento preventivo general', 'PENDIENTE')
         """)
+
+        // Mantenimiento de prueba
+        db.execSQL("""
+            INSERT INTO $TABLE_MANTENIMIENTOS (orden_id, fecha, diagnostico, trabajo_realizado, observaciones, recomendaciones)
+            VALUES (1, '19/08/2026', 'Filtros obstruidos por polvo y falta de refrigerante.', 'Limpieza de filtros y recarga de gas R-410A.', 'El equipo presentaba vibraciones leves.', 'Realizar próxima revisión en 6 meses.')
+        """)
+
+        // Detalles, Evidencias y Aprobación de prueba
+        db.execSQL("INSERT INTO $TABLE_DETALLE_REPUESTOS (mantenimiento_id, repuesto_id, cantidad) VALUES (1, 1, 2)")
+        db.execSQL("INSERT INTO $TABLE_EVIDENCIAS (orden_id, ruta_foto, fecha) VALUES (1, '/dummy/path/foto.jpg', '19/08/2026')")
+        db.execSQL("INSERT INTO $TABLE_APROBACIONES (orden_id, cliente, ruta_firma, aceptado, fecha) VALUES (1, 'Juan Pérez', '/dummy/path/firma.png', 1, '19/08/2026')")
+        db.execSQL("INSERT INTO $TABLE_UBICACIONES (orden_id, latitud, longitud, fecha) VALUES (1, 4.6097, -74.0817, '19/08/2026')")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
