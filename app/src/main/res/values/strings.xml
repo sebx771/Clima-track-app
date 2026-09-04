@@ -42,4 +42,19 @@
     <string name="msg_orden_exito">Orden creada correctamente</string>
     <string name="msg_orden_error">Error al crear la orden</string>
     <string name="cd_nueva_orden">Nueva Orden</string>
+
+    <!-- Geolocalización -->
+    <string name="title_geolocalizacion">Ubicación del Servicio</string>
+    <string name="status_ubicacion_ok">Ubicación obtenida correctamente</string>
+    <string name="status_ubicacion_error">No se pudo obtener la ubicación</string>
+    <string name="label_latitud">Latitud:</string>
+    <string name="label_longitud">Longitud:</string>
+    <string name="label_direccion">Dirección aproximada:</string>
+    <string name="label_fecha_hora">Fecha y Hora:</string>
+    <string name="btn_actualizar_ubicacion">ACTUALIZAR UBICACIÓN</string>
+    <string name="msg_permiso_denegado">Permiso de ubicación denegado. No se puede mostrar el mapa.</string>
+    <string name="label_dir_no_encontrada">Dirección no encontrada</string>
+    <string name="label_dir_no_disponible">Dirección no disponible</string>
+    <string name="label_dir_error">Error al obtener dirección</string>
+    <string name="label_map_title">Ubicación del Servicio</string>
 </resources>

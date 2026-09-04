@@ -128,6 +128,14 @@ class DashboardFragment : Fragment() {
             cerrarSesion()
         }
 
+        // =========================================================
+        // Acceso a Geolocalización
+        // =========================================================
+        view.findViewById<MaterialButton>(R.id.btnVerMapa).setOnClickListener {
+            val intent = Intent(requireContext(), com.example.mantenimiento.activities.GeolocalizacionActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
     }
 
