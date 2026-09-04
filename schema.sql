@@ -1,5 +1,5 @@
 -- Esquema de Base de Datos para ClimaTrack
--- Generado a partir de DatabaseHelper.kt
+-- Generado a partir de DatabaseHelper.kt (Versión 11)
 
 -- 1. Tabla Usuarios
 CREATE TABLE usuarios (

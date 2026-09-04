@@ -10,7 +10,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // nombre y version de la db
         private const val DATABASE_NAME = "climatrack.db"
-        private const val DATABASE_VERSION = 10
+        private const val DATABASE_VERSION = 11
 
         // Nombres de Tablas
         const val TABLE_USUARIOS = "usuarios"
