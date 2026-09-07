@@ -12,28 +12,34 @@ import androidx.core.app.ActivityCompat
 import com.example.mantenimiento.R
 import com.example.mantenimiento.databinding.ActivityGeolocalizacionBinding
 import com.example.mantenimiento.utils.LocationUtils
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import org.maplibre.android.MapLibre
+import org.maplibre.android.annotations.MarkerOptions
+import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.OnMapReadyCallback
+import org.maplibre.android.maps.Style
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityGeolocalizacionBinding
-    private var googleMap: GoogleMap? = null
+    private var mapLibreMap: MapLibreMap? = null
     private val locationPermissionRequestCode = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Inicialización de MapLibre (IMPORTANTE: Antes de setContentView)
+        MapLibre.getInstance(this)
+
         binding = ActivityGeolocalizacionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupToolbar()
         
-        // Inicialización de MapView de Google
+        // Inicialización de MapView de MapLibre
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
 
@@ -47,19 +53,21 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.toolbarGeo.setNavigationOnClickListener { finish() }
     }
 
-    override fun onMapReady(map: GoogleMap) {
+    override fun onMapReady(map: MapLibreMap) {
         if (isFinishing || isDestroyed) return
         
-        googleMap = map
-        googleMap?.apply {
-            uiSettings.isZoomControlsEnabled = true
-            uiSettings.isMyLocationButtonEnabled = false
-        }
+        mapLibreMap = map
         
-        // Pequeño delay para asegurar fluidez en la carga inicial
-        binding.root.postDelayed({
-            checkPermissionsAndGetLocation()
-        }, 500)
+        // Configurar estilo gratuito de OpenFreeMap
+        map.setStyle(Style.Builder().fromUri("https://tiles.openfreemap.org/styles/liberty")) {
+            // Estilo cargado
+            map.uiSettings.isZoomGesturesEnabled = true
+            
+            // Pequeño delay para asegurar fluidez en la carga inicial
+            binding.root.postDelayed({
+                checkPermissionsAndGetLocation()
+            }, 500)
+        }
     }
 
     private fun checkPermissionsAndGetLocation() {
@@ -98,11 +106,14 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun actualizarUI(latLng: LatLng) {
         if (isFinishing || isDestroyed) return
 
-        googleMap?.let { map ->
+        mapLibreMap?.let { map ->
             try {
                 map.clear()
-                map.addMarker(MarkerOptions().position(latLng).title(getString(R.string.label_map_title)))
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                map.addMarker(MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.label_map_title)))
+                
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -141,7 +152,7 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
         }.start()
     }
 
-    // Métodos obligatorios del ciclo de vida para MapView
+    // Métodos obligatorios del ciclo de vida para MapLibre MapView
     override fun onStart() {
         super.onStart()
         binding.mapView.onStart()
