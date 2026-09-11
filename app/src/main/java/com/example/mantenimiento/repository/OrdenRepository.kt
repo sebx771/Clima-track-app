@@ -241,4 +241,52 @@ class OrdenRepository(context: Context) {
         cursor.close()
         return lista
     }
+
+    fun obtenerOrdenesPorCliente(clienteId: Int): List<Orden> {
+        val lista = mutableListOf<Orden>()
+        val db = dbHelper.readableDatabase
+        val query = """
+            SELECT o.*, u.${DatabaseHelper.KEY_USR_NOMBRE} as tecnico_nombre, 
+                   c.${DatabaseHelper.KEY_CLI_NOMBRE} as cliente_nombre, 
+                   e.${DatabaseHelper.KEY_EQP_MARCA} || ' ' || e.${DatabaseHelper.KEY_EQP_MODELO} as equipo_nombre
+            FROM ${DatabaseHelper.TABLE_ORDENES} o
+            LEFT JOIN ${DatabaseHelper.TABLE_USUARIOS} u ON o.${DatabaseHelper.KEY_ORD_TEC_ID} = u.${DatabaseHelper.KEY_USR_ID}
+            LEFT JOIN ${DatabaseHelper.TABLE_CLIENTES} c ON o.${DatabaseHelper.KEY_ORD_CLIENTE_ID} = c.${DatabaseHelper.KEY_CLI_ID}
+            LEFT JOIN ${DatabaseHelper.TABLE_EQUIPOS} e ON o.${DatabaseHelper.KEY_ORD_EQUIPO_ID} = e.${DatabaseHelper.KEY_EQP_ID}
+            WHERE o.${DatabaseHelper.KEY_ORD_CLIENTE_ID} = ?
+        """.trimIndent()
+        val cursor = db.rawQuery(query, arrayOf(clienteId.toString()))
+
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(mapCursorToOrden(cursor))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return lista
+    }
+
+    fun existeOrdenActiva(equipoId: Int): Boolean {
+        val db = dbHelper.readableDatabase
+        val query = "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_ORDENES} WHERE ${DatabaseHelper.KEY_ORD_EQUIPO_ID} = ? AND ${DatabaseHelper.KEY_ORD_ESTADO} IN ('PENDIENTE', 'EN PROCESO')"
+        val cursor = db.rawQuery(query, arrayOf(equipoId.toString()))
+        var existe = false
+        if (cursor.moveToFirst()) {
+            existe = cursor.getInt(0) > 0
+        }
+        cursor.close()
+        return existe
+    }
+
+    fun existeOrdenEnFecha(equipoId: Int, fecha: String): Boolean {
+        val db = dbHelper.readableDatabase
+        val query = "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_ORDENES} WHERE ${DatabaseHelper.KEY_ORD_EQUIPO_ID} = ? AND ${DatabaseHelper.KEY_ORD_FECHA} = ?"
+        val cursor = db.rawQuery(query, arrayOf(equipoId.toString(), fecha))
+        var existe = false
+        if (cursor.moveToFirst()) {
+            existe = cursor.getInt(0) > 0
+        }
+        cursor.close()
+        return existe
+    }
 }

@@ -3,6 +3,7 @@ package com.example.mantenimiento.security
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.mantenimiento.models.Usuario
+import com.example.mantenimiento.repository.ClienteRepository
 
 class SessionManager(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("ClimaTrackPrefs", Context.MODE_PRIVATE)
@@ -33,6 +34,12 @@ class SessionManager(context: Context) {
     fun getUserId(): Int = prefs.getInt("userId", -1)
     
     fun getEmpresaCliente(): String? = prefs.getString("empresaCliente", null)
+
+    fun getClienteIdAsociado(context: Context): Int {
+        val empresa = getEmpresaCliente() ?: return -1
+        val repo = ClienteRepository(context)
+        return repo.getClienteByNombre(empresa)?.id ?: -1
+    }
 
     fun logout() {
         prefs.edit().clear().apply()

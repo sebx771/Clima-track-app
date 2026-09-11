@@ -102,6 +102,10 @@ class EquiposFragment : Fragment() {
             popup.menu.add("Eliminar")
         }
 
+        if (AccessControl.canRequestService(role)) {
+            popup.menu.add("Solicitar Mantenimiento")
+        }
+
         popup.setOnMenuItemClickListener { item ->
             when (item.title) {
                 "Registrar Mantenimiento" -> {
@@ -116,6 +120,12 @@ class EquiposFragment : Fragment() {
                     startActivity(intent)
                 }
                 "Eliminar" -> confirmDelete(equipo)
+                "Solicitar Mantenimiento" -> {
+                    val intent = Intent(requireContext(), com.example.mantenimiento.activities.FormOrdenActivity::class.java)
+                    intent.putExtra("EQUIPO_ID", equipo.id)
+                    intent.putExtra("CLIENTE_ID", equipo.clienteId)
+                    startActivity(intent)
+                }
             }
             true
         }
@@ -140,8 +150,8 @@ class EquiposFragment : Fragment() {
     private fun loadEquipos() {
         val role = sessionManager.getUserRole()
         val lista = if (role == Role.CLIENTE) {
-            val userId = sessionManager.getUserId()
-            repo.getEquiposByCliente(userId)
+            val clienteId = sessionManager.getClienteIdAsociado(requireContext())
+            repo.getEquiposByCliente(clienteId)
         } else {
             repo.getAllEquipos()
         }

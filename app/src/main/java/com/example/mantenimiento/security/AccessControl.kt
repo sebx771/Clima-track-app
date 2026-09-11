@@ -8,9 +8,11 @@ object AccessControl {
 
     fun canCreateEquipment(role: Role): Boolean = role == Role.ADMIN
 
-    fun canViewOrders(role: Role): Boolean = role == Role.ADMIN || role == Role.TECNICO
+    fun canViewOrders(role: Role): Boolean = role == Role.ADMIN || role == Role.TECNICO || role == Role.CLIENTE
 
     fun canRegisterMaintenance(role: Role): Boolean = role == Role.ADMIN || role == Role.TECNICO
 
     fun canEditOrDelete(role: Role): Boolean = role == Role.ADMIN
+
+    fun canRequestService(role: Role): Boolean = role == Role.ADMIN || role == Role.CLIENTE
 }
