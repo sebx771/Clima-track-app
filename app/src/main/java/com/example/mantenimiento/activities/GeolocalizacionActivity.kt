@@ -58,8 +58,16 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
         
         mapLibreMap = map
         
-        // Configurar estilo gratuito de OpenFreeMap
-        map.setStyle(Style.Builder().fromUri("https://tiles.openfreemap.org/styles/liberty")) {
+        // Leer el estilo desde la carpeta assets directamente
+        val styleJson = try {
+            assets.open("map_style.json").bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "{}" // Fallback vacío
+        }
+
+        // Configurar estilo usando el JSON parseado manualmente para mayor seguridad
+        map.setStyle(Style.Builder().fromJson(styleJson)) {
             // Estilo cargado
             map.uiSettings.isZoomGesturesEnabled = true
             
@@ -113,7 +121,10 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
                     .position(latLng)
                     .title(getString(R.string.label_map_title)))
                 
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0))
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.0))
+
+                // Muestreo Académico: Agregar técnicos simulados en Barranquilla
+                agregarTecnicosSimulados(map, latLng)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -126,6 +137,22 @@ class GeolocalizacionActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.tvFechaHora.text = fechaHora
 
         obtenerDireccion(latLng)
+    }
+
+    private fun agregarTecnicosSimulados(map: MapLibreMap, miUbicacion: LatLng) {
+        // Técnico 02 - Cerca de la zona norte (Buenavista)
+        val posTecnico02 = LatLng(miUbicacion.latitude + 0.015, miUbicacion.longitude - 0.010)
+        map.addMarker(MarkerOptions()
+            .position(posTecnico02)
+            .title("Técnico 02 - En servicio")
+            .snippet("Centro Comercial Buenavista"))
+
+        // Técnico 03 - Cerca de la zona centro-sur
+        val posTecnico03 = LatLng(miUbicacion.latitude - 0.010, miUbicacion.longitude + 0.005)
+        map.addMarker(MarkerOptions()
+            .position(posTecnico03)
+            .title("Técnico 03 - Disponible")
+            .snippet("Cerca de Catedral Metropolitana"))
     }
 
     private fun obtenerDireccion(latLng: LatLng) {

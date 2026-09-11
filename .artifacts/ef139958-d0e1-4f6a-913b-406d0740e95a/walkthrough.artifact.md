@@ -1,40 +1,34 @@
-# Walkthrough: Mejoras en el Rol Cliente y UI
+# Walkthrough: Validaciones Robustas en Creación de Órdenes
 
-He completado las mejoras solicitadas para el cliente, asegurando que ahora pueda ver su información correctamente y que la interfaz sea coherente con sus permisos.
+He implementado un conjunto de validaciones tanto en el cliente (UI) como en la persistencia (DB) para asegurar que las órdenes de mantenimiento se creen bajo reglas de negocio estrictas.
 
 ## Cambios Realizados
 
-### 1. Sincronización de Datos del Cliente
-Se corrigió el error donde las listas de **Equipos**, **Historial** y **Órdenes** aparecían vacías.
-- **Problema:** Se filtraba por el ID del usuario de la sesión, pero en la DB los registros están asociados al ID de la empresa (Cliente).
-- **Solución:** Implementé una lógica en `SessionManager` que traduce el nombre de la empresa guardado en la sesión al ID real de la base de datos mediante `ClienteRepository`.
-- **Archivos modificados:**
-    - [SessionManager.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/security/SessionManager.kt)
-    - [ClienteRepository.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/repository/ClienteRepository.kt)
-    - [EquiposFragment.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/fragments/EquiposFragment.kt)
-    - [HistorialFragment.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/fragments/HistorialFragment.kt)
+### 1. Mejoras en el Repositorio de Órdenes
+Se añadieron métodos para consultar el estado del equipo antes de permitir una nueva solicitud.
+- `existeOrdenActiva(equipoId: Int)`: Detecta si hay trabajos en curso o pendientes.
+- `existeOrdenEnFecha(equipoId: Int, fecha: String)`: Evita duplicados para el mismo día.
+- **Archivo:** [OrdenRepository.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/repository/OrdenRepository.kt)
 
-### 2. Habilitación de Seguimiento de Órdenes
-- El rol `CLIENTE` ahora tiene autorización para entrar a la sección de **Órdenes**, permitiéndole ver el estado de sus solicitudes.
-- Se añadió un filtro automático para que el cliente solo vea las órdenes que pertenecen a su empresa.
-- **Archivos modificados:**
-    - [AccessControl.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/security/AccessControl.kt)
-    - [OrdenRepository.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/repository/OrdenRepository.kt)
-    - [OrdenesFragment.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/fragments/OrdenesFragment.kt)
+### 2. Restricciones de Fecha Inteligentes
+El selector de fecha (`DatePickerDialog`) ahora es más restrictivo para evitar errores comunes:
+- **Mínimo:** No se permiten fechas pasadas (hoy es el límite inferior).
+- **Máximo:** Se limitó la agenda a un máximo de 60 días a futuro.
+- **Días Laborales:** Si el usuario selecciona un Sábado o Domingo, el sistema bloquea la selección con un mensaje informativo.
+- **Archivo:** [FormOrdenActivity.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/activities/FormOrdenActivity.kt)
 
-### 3. Limpieza de Interfaz (UI/UX)
-- Se ocultó el panel de **Clientes** en el menú de opciones (Popup superior) para usuarios que no sean Administradores.
-- Esto evita que un cliente vea una opción que no puede usar, mejorando la limpieza visual.
-- **Archivo modificado:** [DashboardFragment.kt](file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/fragments/DashboardFragment.kt)
+### 3. Calidad de la Información
+- Se añadió una validación de longitud mínima (20 caracteres) para la descripción del servicio. Esto obliga al usuario a proporcionar contexto útil para el técnico.
+- Se integraron todas las validaciones del repositorio en el flujo de guardado.
 
-## Resultados de la Verificación
-> [!IMPORTANT]
-> Al entrar con el usuario de prueba `cliente01` (password `123456`), ahora deberías ver:
-> 1. En el Dashboard, al tocar el icono de 3 puntos, ya no aparece la opción "Clientes".
-> 2. El botón "Ver Órdenes" ya es funcional.
-> 3. En "Equipos" aparece el equipo 'WindFree 24K' (que pertenece a ACME S.A.S).
-> 4. En "Historial" se listan los mantenimientos realizados a dicho equipo.
+## Resumen de Reglas Aplicadas
+| Validación | Tipo | Acción |
+| :--- | :--- | :--- |
+| **Fecha Pasada** | UI | Bloqueado en el calendario |
+| **Fines de Semana** | UI | Mensaje de advertencia y borrado de selección |
+| **Duplicidad Diaria** | DB | Error: "Ya existe una solicitud hoy" |
+| **Órdenes Activas** | DB | Error: "El equipo ya tiene una orden activa" |
+| **Descripción** | Lógica | Mínimo 20 caracteres |
 
-render_diffs(file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/fragments/DashboardFragment.kt)
-render_diffs(file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/security/AccessControl.kt)
-render_diffs(file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/security/SessionManager.kt)
+render_diffs(file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/repository/OrdenRepository.kt)
+render_diffs(file:///C:/Users/Aprendiz/AndroidStudioProjects/Clima-track-app/app/src/main/java/com/example/mantenimiento/activities/FormOrdenActivity.kt)

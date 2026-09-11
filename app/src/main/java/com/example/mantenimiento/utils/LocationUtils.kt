@@ -21,9 +21,21 @@ object LocationUtils {
             Priority.PRIORITY_HIGH_ACCURACY,
             cancellationTokenSource.token
         ).addOnSuccessListener { location: Location? ->
-            onLocationReceived(location)
+            if (location != null) {
+                onLocationReceived(location)
+            } else {
+                onLocationReceived(getFallbackLocation())
+            }
         }.addOnFailureListener {
-            onLocationReceived(null)
+            onLocationReceived(getFallbackLocation())
         }
+    }
+
+    private fun getFallbackLocation(): Location {
+        val fallbackLocation = Location("fallback")
+        // Ubicación de respaldo: Centro de Barranquilla, Atlántico
+        fallbackLocation.latitude = 10.9639
+        fallbackLocation.longitude = -74.7964
+        return fallbackLocation
     }
 }

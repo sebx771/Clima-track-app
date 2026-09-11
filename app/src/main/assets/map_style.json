@@ -1,25 +1,33 @@
 {
   "version": 8,
-  "name": "OSM Raster",
+  "name": "CartoDB Voyager",
   "sources": {
-    "osm": {
+    "carto-voyager": {
       "type": "raster",
       "tiles": [
-        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
       ],
       "tileSize": 256,
-      "attribution": "&copy; OpenStreetMap contributors"
+      "attribution": "&copy; OpenStreetMap contributors &copy; CARTO"
     }
   },
   "layers": [
     {
-      "id": "osm-tiles",
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#EAEAE6"
+      }
+    },
+    {
+      "id": "carto-tiles",
       "type": "raster",
-      "source": "osm",
+      "source": "carto-voyager",
       "minzoom": 0,
-      "maxzoom": 22
+      "maxzoom": 20
     }
   ]
 }

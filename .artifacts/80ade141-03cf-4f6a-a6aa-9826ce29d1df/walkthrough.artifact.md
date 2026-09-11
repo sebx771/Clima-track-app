@@ -1,24 +1,24 @@
-# Resumen de Cambios: Plan de Mejora
+# Resumen de Mejoras: Geolocalización y Muestreo Académico
 
-He implementado exitosamente el plan de mejora que acordamos para la aplicación. Estos son los cambios principales:
+He implementado una serie de mejoras críticas para optimizar la carga del mapa y enriquecer la base de datos con fines académicos.
 
-### 1. Geolocalización (Emulada y Protegida)
-- **`LocationUtils.kt`**: Modifiqué la lógica para que, si el sensor GPS del dispositivo falla o el usuario deniega los permisos (un caso muy común en emuladores o interiores), el sistema devuelva automáticamente una ubicación de respaldo (Centro de Bogotá: Lat 4.6097, Lon -74.0817).
-- **`SignatureActivity.kt`**: El proceso de firma y guardado del servicio ya no fallará si no hay GPS, garantizando que siempre se envíen datos válidos a la base de datos.
-- **Interfaz (Dashboard)**: Cambié la etiqueta del botón en el Dashboard de "Geolocalización del Servicio" a **"Ver Ubicación Técnica"**.
-- **`strings.xml`**: El marcador en el mapa ahora dice "Ubicación del Técnico" para mayor claridad.
+### 1. Optimización del Mapa (Solución al Mapa Beige/Negro)
+- **Proveedor Raster (CartoDB)**: Cambié la fuente de los mapas de vectores pesados a imágenes "Raster" ligeras de CartoDB Voyager. Esto soluciona los problemas de renderizado en el emulador.
+- **Estilo Local**: El archivo `assets/map_style.json` ahora reside en la app, eliminando la dependencia de servidores de estilos externos inestables.
+- **Lectura Segura**: La app ahora lee el JSON manualmente y lo inyecta a MapLibre, asegurando que el mapa siempre tenga su configuración.
 
-### 2. Control de Acceso y Funcionalidad del Cliente
-- **`AccessControl.kt`**: Creé el permiso `canRequestService`, el cual es exclusivo para el Administrador y el Cliente.
-- **`EquiposFragment.kt`**: Añadí la opción **"Solicitar Mantenimiento"** en el menú desplegable (tres puntos) de cada equipo, la cual solo es visible si el usuario tiene rol de Cliente. Al presionar esta opción, se abre el formulario de nueva orden de trabajo con el ID del equipo pre-cargado.
-- **`FormOrdenActivity.kt`**: Reestructuré la lógica del formulario:
-  - **Identidad del Cliente**: El formulario detecta si quien entró es un cliente. De ser así, se auto-asigna su nombre de empresa (bloqueando el campo) para evitar que solicite órdenes a nombre de otros clientes.
-  - **Filtro de Equipos**: El autocompletado de equipos ahora muestra estrictamente los equipos asociados a ese cliente.
-  - **Número de Solicitud Automático**: Se genera automáticamente un número de ticket con el formato `SOL-<Timestamp>` para identificar que es una solicitud entrante.
+### 2. Expansión de la Base de Datos (Muestreo Barranquilla)
+- **Nuevos Técnicos**: Se añadieron `tecnico02` y `tecnico03` (password: `123456`) como datos semilla.
+- **Nuevos Clientes y Equipos**:
+    - **Hospital Norte Barranquilla**: Con un sistema de aire central industrial.
+    - **C.C. Buenavista**: Con un sistema de enfriamiento Chiller.
+- **Ubicación Atlántico**: Se configuró Barranquilla como la ubicación por defecto de la aplicación en caso de falla de GPS.
+
+### 3. Simulación de Flota de Técnicos
+- **Pines Simulados**: Al abrir el mapa, ahora se visualiza no solo tu ubicación, sino también la posición de otros técnicos distribuidos por la ciudad (zona de Buenavista y Centro).
+- **Zoom Inteligente**: El mapa se ajusta automáticamente para mostrar a toda la flota en un radio de acción urbana.
 
 ### Resultados de la Verificación
-- El proyecto compila correctamente sin errores.
-- Los menús y las restricciones de roles actúan como se espera (el técnico no puede pedir mantenimientos, pero el cliente sí).
-- La validación de los campos está protegida.
-
-La aplicación ahora está mucho más enfocada en brindar una excelente experiencia de usuario para el rol de Cliente, permitiéndole interactuar directamente con sus equipos sin comprometer la seguridad de los datos.
+- El proyecto compila y se ejecuta sin errores.
+- La base de datos se actualiza automáticamente a la versión 12 al iniciar la app.
+- El mapa carga instantáneamente y muestra la información de Atlántico de forma clara.

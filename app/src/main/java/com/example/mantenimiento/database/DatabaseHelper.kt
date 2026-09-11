@@ -10,7 +10,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // nombre y version de la db
         private const val DATABASE_NAME = "climatrack.db"
-        private const val DATABASE_VERSION = 10
+        private const val DATABASE_VERSION = 12
 
         // Nombres de Tablas
         const val TABLE_USUARIOS = "usuarios"
@@ -245,14 +245,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     private fun seedData(db: SQLiteDatabase) {
         // Usuarios de prueba
         db.execSQL("INSERT INTO $TABLE_USUARIOS (usuario, password, nombre, rol, email) VALUES ('tecnico01', '123456', 'Técnico 01', 'Técnico', 'tecnico01@climatrack.com')")
+        db.execSQL("INSERT INTO $TABLE_USUARIOS (usuario, password, nombre, rol, email) VALUES ('tecnico02', '123456', 'Técnico 02', 'Técnico', 'tecnico02@climatrack.com')")
+        db.execSQL("INSERT INTO $TABLE_USUARIOS (usuario, password, nombre, rol, email) VALUES ('tecnico03', '123456', 'Técnico 03', 'Técnico', 'tecnico03@climatrack.com')")
         db.execSQL("INSERT INTO $TABLE_USUARIOS (usuario, password, nombre, rol, email) VALUES ('admin01', '123456', 'Administrador', 'Administrador', 'admin@climatrack.com')")
         db.execSQL("INSERT INTO $TABLE_USUARIOS (usuario, password, nombre, rol, email) VALUES ('cliente01', '123456', 'Cliente ACME', 'Cliente', 'cliente@acme.com')")
         
         // Clientes
         db.execSQL("INSERT INTO $TABLE_CLIENTES (nombre, telefono, direccion, email) VALUES ('ACME S.A.S', '555-0101', 'Calle 45 #12-34', 'contacto@acme.com')")
+        db.execSQL("INSERT INTO $TABLE_CLIENTES (nombre, telefono, direccion, email) VALUES ('Hospital Norte Barranquilla', '555-0202', 'Calle 98 #51B-20', 'mantenimiento@hospinorte.com')")
+        db.execSQL("INSERT INTO $TABLE_CLIENTES (nombre, telefono, direccion, email) VALUES ('C.C. Buenavista', '555-0303', 'Calle 99 #52-115', 'servicios@buenavista.com')")
         
         // Equipos
         db.execSQL("INSERT INTO $TABLE_EQUIPOS (codigo, tipo, marca, modelo, serial, capacidad, ubicacion, cliente_id, estado) VALUES ('EQ-001', 'Split', 'Samsung', 'WindFree 24K', 'SAM-998877', '24000 BTU', 'Oficina 301', 1, 'OPERATIVO')")
+        db.execSQL("INSERT INTO $TABLE_EQUIPOS (codigo, tipo, marca, modelo, serial, capacidad, ubicacion, cliente_id, estado) VALUES ('EQ-H01', 'Central', 'Carrier', 'Infinity 50', 'CAR-112233', '50 Ton', 'Piso 1 - UCI', 2, 'OPERATIVO')")
+        db.execSQL("INSERT INTO $TABLE_EQUIPOS (codigo, tipo, marca, modelo, serial, capacidad, ubicacion, cliente_id, estado) VALUES ('EQ-BV01', 'Chiller', 'York', 'YK-Centrifugal', 'YRK-445566', '200 Ton', 'Azotea Bloque B', 3, 'OPERATIVO')")
         
         // Repuestos
         db.execSQL("INSERT INTO $TABLE_REPUESTOS (nombre, codigo, unidad, cantidad_disponible) VALUES ('Filtro de Aire', 'FIL-001', 'Unidad', 50)")
