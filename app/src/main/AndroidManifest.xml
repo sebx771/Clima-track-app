@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
@@ -91,14 +93,6 @@
             android:name=".activities.GeolocalizacionActivity"
             android:exported="false"
             android:label="Ubicación del Servicio" />
-
-        <!--
-             TODO: Reemplaza "TU_API_KEY_AQUÍ" con una clave de API de Google Maps válida.
-             Puedes obtener una en: https://console.cloud.google.com/google/maps-apis/credentials
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="TU_API_KEY_AQUÍ" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

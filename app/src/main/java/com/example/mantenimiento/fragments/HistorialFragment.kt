@@ -88,10 +88,10 @@ class HistorialFragment : Fragment() {
 
     private fun cargarHistorial() {
         val role = sessionManager.getUserRole()
-        val userId = sessionManager.getUserId()
 
         val lista = if (role == Role.CLIENTE) {
-            repoMnt.getMantenimientosByCliente(userId)
+            val clienteId = sessionManager.getClienteIdAsociado(requireContext())
+            repoMnt.getMantenimientosByCliente(clienteId)
         } else {
             repoMnt.getAllMantenimientos()
         }

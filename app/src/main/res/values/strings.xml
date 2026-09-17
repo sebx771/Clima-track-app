@@ -56,5 +56,5 @@
     <string name="label_dir_no_encontrada">Dirección no encontrada</string>
     <string name="label_dir_no_disponible">Dirección no disponible</string>
     <string name="label_dir_error">Error al obtener dirección</string>
-    <string name="label_map_title">Ubicación del Servicio</string>
+    <string name="label_map_title">Ubicación del Técnico</string>
 </resources>

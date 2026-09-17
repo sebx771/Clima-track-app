@@ -1,0 +1,33 @@
+{
+  "version": 8,
+  "name": "CartoDB Voyager",
+  "sources": {
+    "carto-voyager": {
+      "type": "raster",
+      "tiles": [
+        "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+      ],
+      "tileSize": 256,
+      "attribution": "&copy; OpenStreetMap contributors &copy; CARTO"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#EAEAE6"
+      }
+    },
+    {
+      "id": "carto-tiles",
+      "type": "raster",
+      "source": "carto-voyager",
+      "minzoom": 0,
+      "maxzoom": 20
+    }
+  ]
+}

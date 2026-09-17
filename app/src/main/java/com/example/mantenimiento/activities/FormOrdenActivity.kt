@@ -34,8 +34,8 @@ class FormOrdenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         sessionManager = SessionManager(this)
-        if (!AccessControl.canManageInventory(sessionManager.getUserRole())) {
-            Toast.makeText(this, "Solo el administrador puede crear órdenes", Toast.LENGTH_SHORT).show()
+        if (!AccessControl.canRequestService(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -57,6 +57,8 @@ class FormOrdenActivity : AppCompatActivity() {
     }
 
     private fun setupForm() {
+        val role = sessionManager.getUserRole()
+        
         // Fecha
         val etFecha = findViewById<TextInputEditText>(R.id.etFechaOrden)
         etFecha.setOnClickListener { showDatePicker() }
@@ -66,17 +68,50 @@ class FormOrdenActivity : AppCompatActivity() {
         val adapterTipos = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipos)
         findViewById<AutoCompleteTextView>(R.id.spinnerTipoOrden).setAdapter(adapterTipos)
 
-        // Cargar Sugerencias de Clientes
-        listaClientes = clienteRepo.getAllClientes()
-        val nombresClientes = listaClientes.map { it.nombre }
-        val adapterClientes = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nombresClientes)
-        findViewById<AutoCompleteTextView>(R.id.etClienteNombre).setAdapter(adapterClientes)
+        val etClienteNombre = findViewById<AutoCompleteTextView>(R.id.etClienteNombre)
+        val etEquipoNombre = findViewById<AutoCompleteTextView>(R.id.etEquipoNombre)
 
-        // Cargar Sugerencias de Equipos
-        listaEquipos = equipoRepo.getAllEquipos()
-        val nombresEquipos = listaEquipos.map { "${it.marca} ${it.modelo} (${it.codigo})" }
-        val adapterEquipos = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nombresEquipos)
-        findViewById<AutoCompleteTextView>(R.id.etEquipoNombre).setAdapter(adapterEquipos)
+        if (role == com.example.mantenimiento.security.Role.CLIENTE) {
+            val userId = sessionManager.getUserId()
+            
+            // Generar número de OT
+            val etNumeroOT = findViewById<TextInputEditText>(R.id.etNumeroOT)
+            etNumeroOT.setText("SOL-${System.currentTimeMillis()}")
+            etNumeroOT.isEnabled = false
+
+            // Cargar datos de Cliente
+            val clienteName = sessionManager.getEmpresaCliente() ?: "Cliente"
+            listaClientes = clienteRepo.getAllClientes() // Necesitamos la lista para obtener el ID luego
+            etClienteNombre.setText(clienteName, false)
+            etClienteNombre.isEnabled = false
+
+            // Filtrar equipos
+            listaEquipos = equipoRepo.getEquiposByCliente(userId)
+            val nombresEquipos = listaEquipos.map { "${it.marca} ${it.modelo} (${it.codigo})" }
+            val adapterEquipos = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nombresEquipos)
+            etEquipoNombre.setAdapter(adapterEquipos)
+
+            val passedEquipoId = intent.getIntExtra("EQUIPO_ID", -1)
+            if (passedEquipoId != -1) {
+                val eq = listaEquipos.find { it.id == passedEquipoId }
+                if (eq != null) {
+                    etEquipoNombre.setText("${eq.marca} ${eq.modelo} (${eq.codigo})", false)
+                }
+            }
+
+        } else {
+            // Cargar Sugerencias de Clientes
+            listaClientes = clienteRepo.getAllClientes()
+            val nombresClientes = listaClientes.map { it.nombre }
+            val adapterClientes = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nombresClientes)
+            etClienteNombre.setAdapter(adapterClientes)
+
+            // Cargar Sugerencias de Equipos
+            listaEquipos = equipoRepo.getAllEquipos()
+            val nombresEquipos = listaEquipos.map { "${it.marca} ${it.modelo} (${it.codigo})" }
+            val adapterEquipos = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nombresEquipos)
+            etEquipoNombre.setAdapter(adapterEquipos)
+        }
     }
 
     private fun showDatePicker() {
@@ -85,10 +120,27 @@ class FormOrdenActivity : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        DatePickerDialog(this, { _, y, m, d ->
-            val fechaFormateada = String.format(Locale.getDefault(), "%02d/%02d/%d", d, m + 1, y)
-            findViewById<TextInputEditText>(R.id.etFechaOrden).setText(fechaFormateada)
-        }, year, month, day).show()
+        val dialog = DatePickerDialog(this, { _, y, m, d ->
+            val seleccionada = Calendar.getInstance()
+            seleccionada.set(y, m, d)
+            
+            val dayOfWeek = seleccionada.get(Calendar.DAY_OF_WEEK)
+            if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+                Toast.makeText(this, "No se agendan mantenimientos los fines de semana", Toast.LENGTH_SHORT).show()
+            } else {
+                val fechaFormateada = String.format(Locale.getDefault(), "%02d/%02d/%d", d, m + 1, y)
+                findViewById<TextInputEditText>(R.id.etFechaOrden).setText(fechaFormateada)
+            }
+        }, year, month, day)
+
+        // No permitir fechas pasadas
+        dialog.datePicker.minDate = calendar.timeInMillis
+        
+        // Máximo 60 días a futuro
+        calendar.add(Calendar.DAY_OF_YEAR, 60)
+        dialog.datePicker.maxDate = calendar.timeInMillis
+        
+        dialog.show()
     }
 
     private fun saveOrden() {
@@ -104,6 +156,12 @@ class FormOrdenActivity : AppCompatActivity() {
             return
         }
 
+        // Validación de longitud de descripción
+        if (desc.length < 20) {
+            Toast.makeText(this, "La descripción debe tener al menos 20 caracteres para mayor claridad técnica", Toast.LENGTH_LONG).show()
+            return
+        }
+
         // Buscar ID del Cliente
         val cliente = listaClientes.find { it.nombre == clienteSeleccionado }
         if (cliente == null) {
@@ -115,6 +173,17 @@ class FormOrdenActivity : AppCompatActivity() {
         val equipo = listaEquipos.find { "${it.marca} ${it.modelo} (${it.codigo})" == equipoSeleccionado }
         if (equipo == null) {
             Toast.makeText(this, "Debe seleccionar un equipo existente", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validación de Duplicidad y Órdenes Activas
+        if (repo.existeOrdenEnFecha(equipo.id!!, fecha)) {
+            Toast.makeText(this, "Ya existe una solicitud para este equipo en la fecha seleccionada", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        if (repo.existeOrdenActiva(equipo.id!!)) {
+            Toast.makeText(this, "El equipo ya tiene una orden activa (Pendiente o En Proceso)", Toast.LENGTH_LONG).show()
             return
         }
 

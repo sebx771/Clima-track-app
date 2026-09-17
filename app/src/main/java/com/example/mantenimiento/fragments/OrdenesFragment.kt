@@ -135,6 +135,10 @@ class OrdenesFragment : Fragment() {
                 val userId = requireContext().getSharedPreferences("ClimaTrackPrefs", Context.MODE_PRIVATE).getInt("userId", -1)
                 ordenRepository.obtenerOrdenesAsignadas(userId)
             }
+            role == Role.CLIENTE -> {
+                val clienteId = sessionManager.getClienteIdAsociado(requireContext())
+                ordenRepository.obtenerOrdenesPorCliente(clienteId)
+            }
             estado == "TODOS" -> {
                 ordenRepository.obtenerOrdenes()
             }

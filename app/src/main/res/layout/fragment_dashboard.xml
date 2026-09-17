@@ -434,7 +434,7 @@
                     android:id="@+id/btnVerMapa"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:text="Geolocalización del Servicio"
+                    android:text="Ver Ubicación Técnica"
                     android:textAllCaps="false"
                     android:textColor="#263248"
                     android:textSize="14sp"

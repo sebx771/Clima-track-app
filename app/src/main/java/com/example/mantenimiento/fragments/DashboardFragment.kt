@@ -62,15 +62,14 @@ class DashboardFragment : Fragment() {
             popupMenu.menuInflater.inflate(R.menu.bottom_nav_menu, popupMenu.menu)
 
             // =========================================================
-            // NUEVO: Control de acceso para la opción de Usuarios
+            // NUEVO: Control de acceso para la opción de Usuarios y Clientes
             // =========================================================
             val itemUsuarios = popupMenu.menu.findItem(R.id.nav_usuarios)
+            val itemClientes = popupMenu.menu.findItem(R.id.nav_clientes)
 
-            // Si tienes un método en AccessControl (ej: AccessControl.canViewUsers(role)), úsalo.
-            // De lo contrario, ocultamos el ítem manualmente para Técnicos y Clientes:
-            if (role == com.example.mantenimiento.security.Role.TECNICO ||
-                role == com.example.mantenimiento.security.Role.CLIENTE) {
+            if (role != com.example.mantenimiento.security.Role.ADMIN) {
                 itemUsuarios?.isVisible = false
+                itemClientes?.isVisible = false
             }
             // =========================================================
 

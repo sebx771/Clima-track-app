@@ -39,6 +39,20 @@ class ClienteRepository(context: Context) {
         return cliente
     }
 
+    fun getClienteByNombre(nombre: String): Cliente? {
+        val db = dbHelper.readableDatabase
+        var cliente: Cliente? = null
+        val cursor = db.query(DatabaseHelper.TABLE_CLIENTES, null, "${DatabaseHelper.KEY_CLI_NOMBRE}=?", arrayOf(nombre), null, null, null)
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                cliente = mapCursorToCliente(it)
+            }
+        }
+        db.close()
+        return cliente
+    }
+
     fun addCliente(cliente: Cliente): Long {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
